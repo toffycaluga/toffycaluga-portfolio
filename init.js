@@ -18,6 +18,19 @@ window.addEventListener("DOMContentLoaded", () => {
         } else {
             handleKeyDown(e);
         }
+        const submitButton = document.getElementById("contact-submit");
+        if (submitButton) {
+            submitButton.addEventListener("click", () => {
+                const name = document.getElementById("contact-name").value;
+                const email = document.getElementById("contact-email").value;
+                const message = document.getElementById("contact-message").value;
+
+                console.log("Mensaje enviado:", { name, email, message });
+
+                // Enviar por mailto:
+                window.location.href = `mailto:toffycaluga@gmail.com?subject=Contacto desde el portafolio&body=Nombre: ${name}%0ACorreo: ${email}%0AMensaje:%0A${message}`;
+            });
+        }
 
     });
 

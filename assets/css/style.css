@@ -59,3 +59,40 @@ canvas {
   background-color: transparent;
   border: none;
 }
+.contact-form {
+  position: absolute;
+  top: 200px;
+  left: 150px;
+  width: 640px;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-family: monospace;
+}
+
+.contact-form input,
+.contact-form textarea {
+  background-color: #000;
+  color: #00ff88;
+  border: 1px solid #00ff88;
+  padding: 6px;
+  font-size: 16px;
+  font-family: monospace;
+  resize: none;
+}
+
+.contact-form button {
+  width: 120px;
+  background-color: #0088ff;
+  color: white;
+  border: none;
+  padding: 8px;
+  font-family: monospace;
+  cursor: pointer;
+}
+
+.contact-form button:hover {
+  background-color: #00ff88;
+  color: #000;
+}

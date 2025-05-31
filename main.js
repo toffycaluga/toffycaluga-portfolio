@@ -68,7 +68,14 @@ export function handleKeyDown(e) {
                             module.drawAboutScreen(data);
                         });
                     });
+            } if (selected === "menu_contact") {
+                currentScreen = "contact";
+                import("./screens/contact.js").then((module) => {
+                    module.drawContactScreen();     // para pintar el canvas
+                    module.setupContactForm();      // para activar el botón
+                });
             }
+
 
             else if (selected === "menu_language") {
                 window.currentScreen = "language-select";
@@ -77,7 +84,7 @@ export function handleKeyDown(e) {
                 });
 
             } else {
-                alert(`Elegiste: ${selected}`);
+                // alert(`Elegiste: ${selected}`);
             }
         }
     }
@@ -90,6 +97,16 @@ export function handleKeyDown(e) {
         window.currentScreen = "menu";
         drawMenu(selectedOption);
 
+        const form = document.getElementById("contact-form");
+        if (form) {
+            form.style.display = "none";
+            form.reset?.(); // si es un <form>, o manual:
+            document.getElementById("contact-name").value = "";
+            document.getElementById("contact-email").value = "";
+            document.getElementById("contact-message").value = "";
+        }
+
+        // Oculta links de proyectos si estaban
         const linksContainer = document.getElementById("project-links");
         if (linksContainer) linksContainer.innerHTML = "";
     }
