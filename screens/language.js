@@ -1,5 +1,6 @@
 import { setLanguage } from "../i18n/lang.js";
-import { drawStartScreen } from "./start.js";
+import { drawMenu } from "./menu.js";
+import { showCanvas } from "../utils/screen.js";
 
 let selectedLang = 0;
 const options = ["Español", "English"];
@@ -28,14 +29,13 @@ export function handleLanguageInput(e) {
     } else if (e.key === "ArrowDown") {
         selectedLang = (selectedLang + 1) % options.length;
         drawLanguageScreen();
-    } else if (e.key === "Enter") {
-        const langCode = codes[selectedLang];
-        setLanguage(langCode).then(() => {
-            window.currentScreen = "start";
-            import("./start.js").then((module) => {
-                module.drawStartScreen();
-            });
-        });
+    }  else if (e.key === "Enter") {
+    const langCode = codes[selectedLang];
+    setLanguage(langCode).then(() => {
+        showCanvas(); // 👈 ESTA ES LA CLAVE
+        window.currentScreen = "menu";
+        drawMenu();
+    });
+}
 
-    }
 }
