@@ -1,0 +1,11 @@
+{
+  "start_title": "Toffy's Dev Quest",
+  "start_prompt": "Presiona [Enter] para empezar",
+  "menu_title": "Selecciona una opción:",
+  "menu_projects": "Proyectos",
+  "menu_skills": "Skills",
+  "menu_about": "Sobre mí",
+  "menu_contact": "Contacto",
+  "menu_language": "Cambiar idioma",
+  "back_hint": "Presiona ESC para volver al menú"
+}

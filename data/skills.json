@@ -1,0 +1,22 @@
+[
+  {
+    "nombre": "JavaScript",
+    "nivel": "Avanzado"
+  },
+  {
+    "nombre": "Ruby on Rails",
+    "nivel": "Intermedio"
+  },
+  {
+    "nombre": "PostgreSQL",
+    "nivel": "Intermedio"
+  },
+  {
+    "nombre": "Astro.js",
+    "nivel": "Intermedio"
+  },
+  {
+    "nombre": "Git",
+    "nivel": "Avanzado"
+  }
+]
