@@ -15,7 +15,10 @@ const menuOptions = [
     "menu_language"
 ];
 
+
 export function handleKeyDown(e) {
+    console.log("🌐 Idioma actual:", window.currentLang);
+    const langCode = window.currentLang || "es";
     if (currentScreen === "menu") {
         if (e.key === "ArrowUp") {
             selectedOption = (selectedOption - 1 + menuOptions.length) % menuOptions.length;
@@ -26,13 +29,16 @@ export function handleKeyDown(e) {
         } else if (e.key === "Enter") {
             const selected = menuOptions[selectedOption];
             console.log("🔍 Opción seleccionada:", selected);
-
+            console.log("🌐 Idioma actual:", window.currentLang);
+            const langCode = window.currentLang || "es";
             if (selected === "menu_projects") {
-                fetch("data/projects.json")
+                fetch(`data/projects.${langCode}.json`)
                     .then((res) => res.json())
                     .then((projects) => {
                         currentScreen = "projects";
-                        drawProjectsScreen(projects);
+                        import("./screens/projects.js").then((module) => {
+                            module.drawProjectsScreen(data);
+                        });
                     });
             } else if (selected === "menu_skills") {
                 fetch("data/skills.json")
@@ -43,8 +49,6 @@ export function handleKeyDown(e) {
                         drawSkillsScreen(skills);
                     });
             } else if (selected === "menu_about") {
-                console.log("🌐 Idioma actual:", window.currentLang);
-                const langCode = window.currentLang || "es";
                 fetch(`data/about.${langCode}.json`)
                     .then((res) => res.json())
                     .then((data) => {
@@ -73,5 +77,8 @@ export function handleKeyDown(e) {
     ) {
         currentScreen = "menu";
         drawMenu(selectedOption);
+
+        const linksContainer = document.getElementById("project-links");
+        if (linksContainer) linksContainer.innerHTML = "";
     }
 }

@@ -1,0 +1,27 @@
+[
+  {
+    "titulo": "CircAdmin",
+    "descripcion": "App for circus financial and organizational management.",
+    "link": "https://github.com/toffycaluga/circadmin"
+  },
+  {
+    "titulo": "Flying Cáceres",
+    "descripcion": "Multilingual website for the trapeze troupe Flying Cáceres.",
+    "link": "https://flying-caceres.cirxoft.app"
+  },
+  {
+    "titulo": "Flying Henríquez",
+    "descripcion": "Digital portfolio for the Flying Henríquez troupe.",
+    "link": "https://flying-henriquez.cirxoft.app"
+  },
+  {
+    "titulo": "FestivApp",
+    "descripcion": "Platform for circus artists to apply to competition festivals.",
+    "link": "https://github.com/toffycaluga/FestivalApp"
+  },
+  {
+    "titulo": "El Quisco Voting System",
+    "descripcion": "Digital voting platform used by the municipality of El Quisco.",
+    "link": "https://github.com/toffycaluga/votes_elemental_studio"
+  }
+]

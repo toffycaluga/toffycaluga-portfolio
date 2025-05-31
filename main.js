@@ -38,14 +38,17 @@ export function handleKeyDown(e) {
             const selected = menuOptions[selectedOption];
             console.log("🔍 seleccionaste:", selected);
 
+            console.log("🌐 Idioma actual:", window.currentLang);
+            const langCode = window.currentLang || "es";
             if (selected === "menu_projects") {
-                fetch("data/projects.json")
+                fetch(`data/projects.${langCode}.json`)
                     .then((res) => res.json())
                     .then((projects) => {
-                        window.currentScreen = "projects";
-                        drawProjectsScreen(projects);
+                        currentScreen = "projects";
+                        import("./screens/projects.js").then((module) => {
+                            module.drawProjectsScreen(projects);
+                        });
                     });
-
             } else if (selected === "menu_skills") {
                 fetch("data/skills.json")
                     .then((res) => res.json())
@@ -86,5 +89,8 @@ export function handleKeyDown(e) {
     ) {
         window.currentScreen = "menu";
         drawMenu(selectedOption);
+
+        const linksContainer = document.getElementById("project-links");
+        if (linksContainer) linksContainer.innerHTML = "";
     }
 }
