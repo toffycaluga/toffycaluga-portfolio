@@ -7,7 +7,15 @@
   "menu_about": "About me",
   "menu_contact": "Contact",
   "menu_language": "Change language",
-  "back_hint": "Press ESC to return to menu",
+  "back_hint": "Press ESC to return to the menu",
   "skill_learning": "Learning",
-  "skill_mastered": "mastered"
+  "skill_mastered": "Mastered",
+  "skill_description_label": "Description",
+  "about_title": "About me",
+  "about_name_label": "Name",
+  "about_stage_name_label": "Stage name",
+  "about_description_label": "Biography",
+  "about_experience_label": "Experience",
+  "about_status_label": "Current status",
+  "about_contact_label": "Contact"
 }

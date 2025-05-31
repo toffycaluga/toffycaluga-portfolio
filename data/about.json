@@ -1,0 +1,19 @@
+{
+  "nombre_real": "Abraham Lillo",
+  "nombre_artistico": "Toffy Caluga",
+  "descripcion": "Desarrollador fullstack con una trayectoria única: 16 años como payaso circense. Combinando creatividad escénica con programación web, ha creado herramientas para artistas y plataformas de gestión para circos.",
+  "experiencia": [
+    "🎪 16 años como payaso profesional en giras internacionales.",
+    "💻 Freelancer en desarrollo web con JavaScript, Ruby on Rails y Astro.js.",
+    "🚀 Actualmente trabajando en Desafío Latam como tutor técnico."
+  ],
+  "estado_actual": [
+    "🌱 Aprendiendo Python, Django e Inteligencia Artificial.",
+    "🤝 Abierto a colaboraciones creativas y proyectos con impacto social."
+  ],
+  "contacto": {
+    "email": "abraham.lillol@gmail.com",
+    "portafolio": "https://toffycaluga-portfolio.cirxoft.app",
+    "linkedin": "https://www.linkedin.com/in/abraham-lillo-lillo"
+  }
+}

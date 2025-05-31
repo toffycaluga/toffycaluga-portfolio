@@ -1,8 +1,6 @@
 import { drawMenu } from "./screens/menu.js";
 import { drawProjectsScreen } from "./screens/projects.js";
-import { drawSkillsScreen } from "./screens/skills.js";
-import { handleSkillsInput } from "./screens/skills.js";
-
+import { drawSkillsScreen, handleSkillsInput } from "./screens/skills.js";
 
 let selectedOption = 0;
 
@@ -15,14 +13,17 @@ const menuOptions = [
 ];
 
 export function handleKeyDown(e) {
-  // 👉 Pantalla de inicio (HTML, antes de canvas)
+  // 👉 Pantalla de inicio
   if (window.currentScreen === "start" && e.key === "Enter") {
     window.currentScreen = "menu";
     drawMenu(selectedOption);
     return;
   }
+
+  // 👉 Skills (manejo con flechas)
   if (window.currentScreen === "skills") {
     handleSkillsInput(e);
+    return;
   }
 
   // 👉 Menú principal
@@ -35,6 +36,7 @@ export function handleKeyDown(e) {
       drawMenu(selectedOption);
     } else if (e.key === "Enter") {
       const selected = menuOptions[selectedOption];
+      console.log("🔍 seleccionaste:", selected);
 
       if (selected === "menu_projects") {
         fetch("data/projects.json")
@@ -52,18 +54,29 @@ export function handleKeyDown(e) {
             drawSkillsScreen(skills);
           });
 
+      } else if (selected === "menu_about") {
+        fetch("data/about.json")
+          .then((res) => res.json())
+          .then((data) => {
+            window.currentScreen = "about";
+            import("./screens/about.js").then((module) => {
+              module.drawAboutScreen(data);
+            });
+          });
+
       } else if (selected === "menu_language") {
         window.currentScreen = "language-select";
         import("./screens/language.js").then((module) => {
           module.drawLanguageScreen();
         });
+
       } else {
         alert(`Elegiste: ${selected}`);
       }
     }
   }
 
-  // 👉 Escape: volver al menú desde cualquier sección
+  // 👉 Escape para volver al menú desde cualquier sección
   if (
     ["projects", "skills", "about", "contact"].includes(window.currentScreen) &&
     e.key === "Escape"

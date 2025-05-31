@@ -10,5 +10,12 @@
   "back_hint": "Presiona ESC para volver al menú",
   "skill_learning": "Aprendiendo",
   "skill_mastered": "Aprendido",
-  "skill_description_label": "Descripción"
+  "skill_description_label": "Descripción",
+  "about_title": "Sobre mí",
+  "about_name_label": "Nombre",
+  "about_stage_name_label": "Nombre artístico",
+  "about_description_label": "Biografía",
+  "about_experience_label": "Experiencia",
+  "about_status_label": "Estado actual",
+  "about_contact_label": "Contacto"
 }
