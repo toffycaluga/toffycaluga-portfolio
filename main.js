@@ -111,3 +111,14 @@ export function handleKeyDown(e) {
         if (linksContainer) linksContainer.innerHTML = "";
     }
 }
+// Botones virtuales (GameBoy)
+const simulateKey = (key) => {
+  window.dispatchEvent(new KeyboardEvent("keydown", { key }));
+};
+
+document.getElementById("btn-up")?.addEventListener("click", () => simulateKey("ArrowUp"));
+document.getElementById("btn-down")?.addEventListener("click", () => simulateKey("ArrowDown"));
+document.getElementById("btn-left")?.addEventListener("click", () => simulateKey("ArrowLeft"));
+document.getElementById("btn-right")?.addEventListener("click", () => simulateKey("ArrowRight"));
+document.getElementById("btn-a")?.addEventListener("click", () => simulateKey("Enter"));
+document.getElementById("btn-b")?.addEventListener("click", () => simulateKey("Escape"));
