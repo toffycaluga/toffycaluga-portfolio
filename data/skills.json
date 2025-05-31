@@ -1,22 +1,86 @@
 [
   {
     "nombre": "JavaScript",
-    "nivel": "Avanzado"
+    "nivel": "Avanzado",
+    "estado": "aprendido",
+    "logo": "js.png",
+    "descripcion": "Lenguaje base de la web, ejecutado en el navegador y backend."
   },
   {
-    "nombre": "Ruby on Rails",
-    "nivel": "Intermedio"
-  },
-  {
-    "nombre": "PostgreSQL",
-    "nivel": "Intermedio"
+    "nombre": "TypeScript",
+    "nivel": "Intermedio",
+    "estado": "aprendido",
+    "logo": "ts.png",
+    "descripcion": "Superset de JavaScript con tipado estático."
   },
   {
     "nombre": "Astro.js",
-    "nivel": "Intermedio"
+    "nivel": "Intermedio",
+    "estado": "aprendido",
+    "logo": "astro.png",
+    "descripcion": "Framework moderno para sitios rápidos y estáticos."
+  },
+  {
+    "nombre": "React",
+    "nivel": "Intermedio",
+    "estado": "aprendido",
+    "logo": "react.png",
+    "descripcion": "Librería para construir interfaces interactivas con componentes."
+  },
+  {
+    "nombre": "Ruby on Rails",
+    "nivel": "Intermedio",
+    "estado": "aprendido",
+    "logo": "rails.png",
+    "descripcion": "Framework MVC para construir aplicaciones web en Ruby."
+  },
+  {
+    "nombre": "Python",
+    "nivel": "Básico",
+    "estado": "aprendiendo",
+    "logo": "python.png",
+    "descripcion": "Lenguaje de programación versátil y legible."
+  },
+  {
+    "nombre": "Django",
+    "nivel": "Básico",
+    "estado": "aprendiendo",
+    "logo": "django.png",
+    "descripcion": "Framework robusto para construir aplicaciones web en Python."
+  },
+  {
+    "nombre": "PostgreSQL",
+    "nivel": "Intermedio",
+    "estado": "aprendido",
+    "logo": "postgres.png",
+    "descripcion": "Base de datos relacional avanzada y open-source."
+  },
+  {
+    "nombre": "MongoDB",
+    "nivel": "Básico",
+    "estado": "aprendido",
+    "logo": "mongodb.png",
+    "descripcion": "Base de datos NoSQL orientada a documentos."
+  },
+  {
+    "nombre": "Node.js",
+    "nivel": "Intermedio",
+    "estado": "aprendido",
+    "logo": "node.png",
+    "descripcion": "Entorno para ejecutar JavaScript en el servidor."
+  },
+  {
+    "nombre": "Express.js",
+    "nivel": "Intermedio",
+    "estado": "aprendido",
+    "logo": "express.png",
+    "descripcion": "Framework minimalista para APIs en Node.js."
   },
   {
     "nombre": "Git",
-    "nivel": "Avanzado"
+    "nivel": "Avanzado",
+    "estado": "aprendido",
+    "logo": "git.png",
+    "descripcion": "Sistema de control de versiones distribuido."
   }
 ]

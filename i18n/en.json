@@ -7,5 +7,7 @@
   "menu_about": "About me",
   "menu_contact": "Contact",
   "menu_language": "Change language",
-  "back_hint": "Press ESC to return to menu"
+  "back_hint": "Press ESC to return to menu",
+  "skill_learning": "Learning",
+  "skill_mastered": "mastered"
 }

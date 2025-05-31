@@ -4,6 +4,7 @@ import { drawSkillsScreen } from "./screens/skills.js";
 
 export let currentScreen = "menu";
 let selectedOption = 0;
+let cachedSkills = null;
 
 const menuOptions = ["menu_projects", "menu_skills", "menu_about", "menu_contact","menu_language"];
 
@@ -30,6 +31,7 @@ export function handleKeyDown(e) {
         fetch("data/skills.json")
           .then((res) => res.json())
           .then((skills) => {
+            cachedSkills = skills;
             currentScreen = "skills";
             drawSkillsScreen(skills);
           });

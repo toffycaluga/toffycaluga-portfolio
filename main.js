@@ -1,6 +1,8 @@
 import { drawMenu } from "./screens/menu.js";
 import { drawProjectsScreen } from "./screens/projects.js";
 import { drawSkillsScreen } from "./screens/skills.js";
+import { handleSkillsInput } from "./screens/skills.js";
+
 
 let selectedOption = 0;
 
@@ -18,6 +20,9 @@ export function handleKeyDown(e) {
     window.currentScreen = "menu";
     drawMenu(selectedOption);
     return;
+  }
+  if (window.currentScreen === "skills") {
+    handleSkillsInput(e);
   }
 
   // 👉 Menú principal
