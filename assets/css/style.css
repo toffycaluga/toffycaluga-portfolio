@@ -1,74 +1,104 @@
+/* Estilo base centrado y mobile-first */
+
+html,
 body {
   margin: 0;
+  padding: 0;
+  height: 100%;
   background-color: black;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   font-family: monospace;
 }
 
-/* Centrado del contenedor principal */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Contenedor principal */
 .container-flex {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  padding: 1rem;
+  text-align: center;
 }
 
-/* Overlay centrado visualmente */
+/* Pantalla de inicio */
 #start-overlay {
   color: #00ff88;
   background-color: transparent;
-  text-align: center;
   margin-bottom: 20px;
 }
 
 #start-overlay h1 {
-  font-size: 2em;
+  font-size: 1.5em;
   margin-bottom: 1rem;
 }
 
 #start-overlay p {
-  font-size: 1.2em;
+  font-size: 1em;
 }
 
-canvas {
-  border: 3px solid #00ff88;
-  image-rendering: pixelated;
+/* Contenedor del canvas + overlays */
+.canvas-wrapper {
+  position: relative;
+  width: 90vw;
+  max-width: 800px;
+  aspect-ratio: 4 / 3;
 }
+
+/* Canvas responsive */
+canvas {
+  width: 100%;
+  height: 100%;
+  border: 2px solid #00ff88;
+  image-rendering: pixelated;
+  display: block;
+}
+
+/* project-links ocupa todo el canvas */
 .project-links {
   position: absolute;
-  top: 10;
-  left: 10;
-  width: 800px;
-  height: 600px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
-  z-index: 10;
+  z-index: 4;
 }
 
+/* Cada enlace se posiciona con coordenadas absolutas */
 .project-links a {
   position: absolute;
+  pointer-events: auto;
+  font-size: 3vw;
+  /* Escala bien en mobile */
   color: #0088ff;
   font-family: monospace;
-  font-size: 16px;
   text-decoration: underline;
-  pointer-events: auto;
-  line-height: 1;
+  background: transparent;
   white-space: nowrap;
-  background-color: transparent;
-  border: none;
 }
+
+/* Formulario centrado sobre el canvas */
 .contact-form {
   position: absolute;
-  top: 200px;
-  left: 150px;
-  width: 640px;
-  pointer-events: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.85);
+  padding: 1rem;
+  border: 1px solid #00ff88;
+  border-radius: 8px;
+  z-index: 5;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  font-family: monospace;
+  width: 90%;
+  max-width: 400px;
 }
 
 .contact-form input,
@@ -77,22 +107,29 @@ canvas {
   color: #00ff88;
   border: 1px solid #00ff88;
   padding: 6px;
-  font-size: 16px;
-  font-family: monospace;
+  font-size: 14px;
   resize: none;
 }
 
 .contact-form button {
-  width: 120px;
   background-color: #0088ff;
   color: white;
   border: none;
   padding: 8px;
-  font-family: monospace;
   cursor: pointer;
+  font-size: 14px;
 }
 
 .contact-form button:hover {
   background-color: #00ff88;
   color: #000;
+}
+
+@media (min-width: 1024px) {
+  .project-links a {
+    font-size: 2vw;
+    /* Escala bien en mobile */
+  }
+
+  /* Estilos para laptops y pantallas más grandes */
 }

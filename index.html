@@ -15,21 +15,25 @@
             <p>Presiona <strong>Enter</strong> o haz clic en el botón para comenzar tu viaje.</p>
             <button id="start-button">Empezar</button>
         </div>
-        <canvas id="gameCanvas" width="800" height="600" style="display: none;"></canvas>
-        <div id="contact-form" class="contact-form" style="display: none;">
-            <input type="text" id="contact-name" placeholder="Nombre" />
-            <input type="email" id="contact-email" placeholder="Email" />
-            <textarea id="contact-message" placeholder="Mensaje"></textarea>
-            <button id="contact-submit">Enviar</button>
-        </div>
 
+        <!-- Contenedor para canvas + formulario encima -->
+        <div class="canvas-wrapper">
+            <canvas id="gameCanvas" width="800" height="600" style="display: none;"></canvas>
+
+            <!--  formulario encima del canvas -->
+            <div id="contact-form" class="contact-form" style="display: none;">
+                <input type="text" id="contact-name" placeholder="Nombre" />
+                <input type="email" id="contact-email" placeholder="Email" />
+                <textarea id="contact-message" placeholder="Mensaje"></textarea>
+                <button id="contact-submit">Enviar</button>
+            </div>
+        </div>
+         <!--  links sobre el canvas -->
+        <div id="project-links" class="project-links"></div>
     </div>
 
-    <div id="project-links" class="project-links"></div>
-
     <script type="module" src="init.js"></script>
-
-    <!-- <script type="module" src="main.js"></script> -->
 </body>
+
 
 </html>
