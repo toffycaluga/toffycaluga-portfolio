@@ -1,6 +1,6 @@
 import { drawLanguageScreen, handleLanguageInput } from "./screens/language.js";
 import { handleKeyDown } from "./main.js";
-
+window.currentLang = "es"; // español por defecto si no se elige nada
 window.currentScreen = "language-select";
 
 function showCanvas() {
