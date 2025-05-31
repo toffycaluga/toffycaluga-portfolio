@@ -1,53 +1,50 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Toffy's Dev Quest</title>
-    <link rel="stylesheet" href="./assets/css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Toffy's Dev Quest</title>
+  <link rel="stylesheet" href="./assets/css/style.css">
 </head>
-
 <body>
+  <div class="console-shell">
     <div class="container-flex">
-        <div id="start-overlay">
-            <h1>Toffy's Dev Quest</h1>
-            <p>Presiona <strong>Enter</strong> o haz clic en el botón para comenzar tu viaje.</p>
-            <button id="start-button">Empezar</button>
-        </div>
+      <div class="canvas-wrapper">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
 
-        <!-- Contenedor para canvas + formulario encima -->
-        <div class="canvas-wrapper">
-            <canvas id="gameCanvas" width="800" height="600" style="display: none;"></canvas>
-
-            <!--  formulario encima del canvas -->
-            <div id="contact-form" class="contact-form" style="display: none;">
-                <input type="text" id="contact-name" placeholder="Nombre" />
-                <input type="email" id="contact-email" placeholder="Email" />
-                <textarea id="contact-message" placeholder="Mensaje"></textarea>
-                <button id="contact-submit">Enviar</button>
-            </div>
-        </div>
-
-        <!--  links sobre el canvas -->
         <div id="project-links" class="project-links"></div>
-        <div class="gameboy-controls">
-            <div class="dpad">
-                <button class="btn" id="btn-up">▲</button>
-                <button class="btn" id="btn-left">◀</button>
-                <button class="btn" id="btn-right">▶</button>
-                <button class="btn" id="btn-down">▼</button>
-            </div>
-            <div class="ab-buttons">
-                <button class="btn btn-a" id="btn-a">A</button>
-                <button class="btn btn-b" id="btn-b">B</button>
-            </div>
+        <div id="contact-form" class="contact-form" style="display: none;">
+          <input type="text" id="contact-name" placeholder="Nombre" />
+          <input type="email" id="contact-email" placeholder="Email" />
+          <textarea id="contact-message" placeholder="Mensaje"></textarea>
+          <button id="contact-submit">Enviar</button>
         </div>
+      </div>
 
+      <div class="parlante">
+        <div></div><div></div><div></div><div></div><div></div>
+      </div>
+
+      <div class="start-select">
+        <button id="btn-start">START</button>
+        <button id="btn-select">SELECT</button>
+      </div>
+
+      <div class="gameboy-controls">
+        <div class="dpad">
+          <button class="btn" id="btn-up">▲</button>
+          <button class="btn" id="btn-left">◀</button>
+          <button class="btn" id="btn-right">▶</button>
+          <button class="btn" id="btn-down">▼</button>
+        </div>
+        <div class="ab-buttons">
+          <button class="btn btn-a" id="btn-a">A</button>
+          <button class="btn btn-b" id="btn-b">B</button>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <script type="module" src="init.js"></script>
+  <script type="module" src="init.js"></script>
 </body>
-
-
 </html>
