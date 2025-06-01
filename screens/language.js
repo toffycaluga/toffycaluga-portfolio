@@ -1,4 +1,5 @@
 import { setLanguage } from "../i18n/lang.js";
+import { playSound, sounds } from "../utils/sound.js";
 import { drawMenu } from "./menu.js";
 
 let selectedLang = 0;
@@ -24,12 +25,15 @@ export function drawLanguageScreen() {
 
 export function handleLanguageInput(e) {
   if (e.key === "ArrowUp") {
+    playSound(sounds.click);
     selectedLang = (selectedLang - 1 + options.length) % options.length;
     drawLanguageScreen();
   } else if (e.key === "ArrowDown") {
+    playSound(sounds.click);
     selectedLang = (selectedLang + 1) % options.length;
     drawLanguageScreen();
   } else if (e.key === "Enter") {
+    playSound(sounds.enter);
     const langCode = codes[selectedLang];
     setLanguage(langCode).then(() => {
       window.currentScreen = "menu";
