@@ -7,7 +7,11 @@ export function drawIntroScreen(onReadyToContinue) {
   let tick = 0;
   let showStartPrompt = false;
 
-  preloadSounds();
+  // 🧠 Llamamos a preload y esperamos a que se complete
+  preloadSounds().then(() => {
+    showStartPrompt = true;
+    onReadyToContinue();
+  });
 
   const interval = setInterval(() => {
     if (window.currentScreen !== "intro") {
@@ -36,9 +40,5 @@ export function drawIntroScreen(onReadyToContinue) {
 
     tick++;
   }, 500);
-
-  setTimeout(() => {
-    showStartPrompt = true;
-    onReadyToContinue();
-  }, 3000);
 }
+

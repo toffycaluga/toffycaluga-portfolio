@@ -1,7 +1,7 @@
 import { drawMenu } from "./screens/menu.js";
 import { drawProjectsScreen } from "./screens/projects.js";
 import { drawSkillsScreen, handleSkillsInput } from "./screens/skills.js";
-import { playSound } from "./utils/sound.js";
+import { playSound, sounds } from "./utils/sound.js";
 
 let selectedOption = 0;
 
@@ -14,90 +14,104 @@ const menuOptions = [
 ];
 
 export function handleKeyDown(e) {
+  // 🎮 Desde pantalla de inicio
   if (window.currentScreen === "start" && e.key === "Enter") {
     window.currentScreen = "menu";
     drawMenu(selectedOption);
     return;
   }
 
+  // 🎯 Navegación interna de skills
   if (window.currentScreen === "skills") {
     handleSkillsInput(e);
     return;
   }
 
+  // 📋 Navegación en el menú principal
   if (window.currentScreen === "menu") {
     if (e.key === "ArrowUp") {
-      playSound();
+      playSound(sounds.click);
       selectedOption = (selectedOption - 1 + menuOptions.length) % menuOptions.length;
       drawMenu(selectedOption);
     } else if (e.key === "ArrowDown") {
+      playSound(sounds.click);
       selectedOption = (selectedOption + 1) % menuOptions.length;
       drawMenu(selectedOption);
     } else if (e.key === "Enter") {
+      playSound(sounds.enter);
       const selected = menuOptions[selectedOption];
       const langCode = window.currentLang || "es";
 
-      if (selected === "menu_projects") {
-        fetch(`data/projects.${langCode}.json`)
-          .then((res) => res.json())
-          .then((projects) => {
-            window.currentScreen = "projects";
-            import("./screens/projects.js").then((module) => {
-              module.drawProjectsScreen(projects);
+      switch (selected) {
+        case "menu_projects":
+          fetch(`data/projects.${langCode}.json`)
+            .then(res => res.json())
+            .then(projects => {
+              window.currentScreen = "projects";
+              import("./screens/projects.js").then(mod => mod.drawProjectsScreen(projects));
             });
-          });
-      } else if (selected === "menu_skills") {
-        fetch("data/skills.json")
-          .then((res) => res.json())
-          .then((skills) => {
-            window.currentScreen = "skills";
-            drawSkillsScreen(skills);
-          });
-      } else if (selected === "menu_about") {
-        fetch(`data/about.${langCode}.json`)
-          .then((res) => res.json())
-          .then((data) => {
-            window.currentScreen = "about";
-            import("./screens/about.js").then((module) => {
-              module.drawAboutScreen(data);
+          break;
+
+        case "menu_skills":
+          fetch("data/skills.json")
+            .then(res => res.json())
+            .then(skills => {
+              window.currentScreen = "skills";
+              drawSkillsScreen(skills);
             });
+          break;
+
+        case "menu_about":
+          fetch(`data/about.${langCode}.json`)
+            .then(res => res.json())
+            .then(data => {
+              window.currentScreen = "about";
+              import("./screens/about.js").then(mod => mod.drawAboutScreen(data));
+            });
+          break;
+
+        case "menu_contact":
+          window.currentScreen = "contact";
+          import("./screens/contact.js").then(mod => {
+            mod.drawContactScreen();
+            mod.setupContactForm?.(); // Safe call
           });
-      } else if (selected === "menu_contact") {
-        window.currentScreen = "contact";
-        import("./screens/contact.js").then((module) => {
-          module.drawContactScreen();
-          module.setupContactForm();
-        });
-      } else if (selected === "menu_language") {
-        window.currentScreen = "language-select";
-        import("./screens/language.js").then((module) => {
-          module.drawLanguageScreen();
-        });
+          break;
+
+        case "menu_language":
+          window.currentScreen = "language-select";
+          import("./screens/language.js").then(mod => mod.drawLanguageScreen());
+          break;
       }
     }
   }
 
+  // 🔙 Volver al menú desde otras pantallas
   if (
     ["projects", "skills", "about", "contact"].includes(window.currentScreen) &&
     e.key === "Escape"
   ) {
+    playSound(sounds.back);
     window.currentScreen = "menu";
     drawMenu(selectedOption);
 
+    // 🧼 Limpiar y ocultar el formulario de contacto
     const form = document.getElementById("contact-form");
     if (form) {
-      form.style.display = "none";
       form.reset?.();
-      document.getElementById("contact-name").value = "";
-      document.getElementById("contact-email").value = "";
-      document.getElementById("contact-message").value = "";
+      form.style.display = "none";
+      ["contact-name", "contact-email", "contact-message"].forEach(id => {
+        const input = document.getElementById(id);
+        if (input) input.value = "";
+      });
     }
 
-    const linksContainer = document.getElementById("project-links");
-    if (linksContainer) linksContainer.innerHTML = "";
+    // 🧼 Limpiar enlaces de proyectos si los hay
+    document.getElementById("project-links")?.replaceChildren();
   }
 }
 
+// 🎮 Simulación de teclas desde botones táctiles
 const simulateKey = (key) => {
   window.dispatchEvent(new KeyboardEvent("keydown", { key }));
 };
