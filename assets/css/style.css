@@ -1,11 +1,10 @@
-/* Estilo base centrado y mobile-first */
-
+/* ==================== Base ==================== */
 html,
 body {
   margin: 0;
   padding: 0;
   height: 100%;
-  background-color: black;
+  background-color: #1a1a1a;
   font-family: monospace;
 }
 
@@ -15,51 +14,108 @@ body {
   align-items: center;
 }
 
-/* Contenedor principal */
+/* ==================== Consola GameBoy ==================== */
+.console-shell {
+  background: linear-gradient(to bottom, #d9d5d0, #bcb7af);
+  border: 8px solid #333;
+  border-radius: 25px;
+  box-shadow: 
+    0 0 30px rgba(0, 0, 0, 0.5),
+    inset -4px -4px 8px rgba(255,255,255,0.3),
+    inset 4px 4px 8px rgba(0,0,0,0.1);
+  padding: 1rem;
+  max-width: 420px;
+  width: 95vw;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+/* Logo tipo GameBoy */
+.console-shell::before {
+  content: "TOFFYBOY";
+  font-family: 'monospace';
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  letter-spacing: 2px;
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-shadow: 1px 1px #fff, -1px -1px #000;
+  pointer-events: none;
+}
+
+/* Tornillos decorativos */
+.console-shell::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0; left: 0;
+  background-image: radial-gradient(#222 20%, transparent 21%),
+                    radial-gradient(#222 20%, transparent 21%);
+  background-position:
+    15px 15px,
+    calc(100% - 15px) calc(100% - 15px);
+  background-size: 10px 10px;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ==================== Contenido principal ==================== */
 .container-flex {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   width: 100%;
-  padding: 1rem;
   text-align: center;
 }
 
-/* Pantalla de inicio */
-#start-overlay {
-  color: #00ff88;
-  background-color: transparent;
-  margin-bottom: 20px;
-}
-
-#start-overlay h1 {
-  font-size: 1.5em;
-  margin-bottom: 1rem;
-}
-
-#start-overlay p {
-  font-size: 1em;
-}
-
-/* Contenedor del canvas + overlays */
+/* ==================== Pantalla ==================== */
 .canvas-wrapper {
   position: relative;
-  width: 90vw;
-  max-width: 800px;
+  width: 100%;
   aspect-ratio: 4 / 3;
+  background: #4a7844;
+  border: 6px inset #2f2f2f;
+  border-radius: 12px;
+  padding: 0.5rem;
+  box-shadow: inset 0 0 6px #000;
 }
 
-/* Canvas responsive */
 canvas {
   width: 100%;
   height: 100%;
-  border: 2px solid #00ff88;
   image-rendering: pixelated;
   display: block;
+  background-color: #000;
+  border-radius: 6px;
 }
 
-/* project-links ocupa todo el canvas */
+/* Efecto CRT (opcional) */
+.canvas-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.08),
+    rgba(0, 0, 0, 0.08) 1px,
+    transparent 2px,
+    transparent 4px
+  );
+  pointer-events: none;
+  z-index: 6;
+}
+
+/* ==================== Enlaces sobre canvas ==================== */
 .project-links {
   position: absolute;
   top: 0;
@@ -67,23 +123,26 @@ canvas {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 4;
+  z-index: 5;
 }
 
-/* Cada enlace se posiciona con coordenadas absolutas */
 .project-links a {
   position: absolute;
   pointer-events: auto;
-  font-size: 3vw;
-  /* Escala bien en mobile */
-  color: #0088ff;
+  font-size: 12px;
   font-family: monospace;
+  color: #00ccff;
   text-decoration: underline;
-  background: transparent;
   white-space: nowrap;
+  transition: color 0.2s, text-shadow 0.2s;
 }
 
-/* Formulario centrado sobre el canvas */
+.project-links a:hover {
+  color: #ffff00;
+  text-shadow: 0 0 5px #ff0;
+}
+
+/* ==================== Formulario sobre canvas ==================== */
 .contact-form {
   position: absolute;
   top: 50%;
@@ -93,7 +152,7 @@ canvas {
   padding: 1rem;
   border: 1px solid #00ff88;
   border-radius: 8px;
-  z-index: 5;
+  z-index: 7;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -125,11 +184,103 @@ canvas {
   color: #000;
 }
 
-@media (min-width: 1024px) {
-  .project-links a {
-    font-size: 2vw;
-    /* Escala bien en mobile */
-  }
+/* ==================== D-Pad y Botones ==================== */
+.gameboy-controls {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 3rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
 
-  /* Estilos para laptops y pantallas más grandes */
+.dpad {
+  display: grid;
+  grid-template-columns: 50px 50px 50px;
+  grid-template-rows: 50px 50px 50px;
+  gap: 5px;
+}
+
+#btn-up { grid-column: 2; grid-row: 1; }
+#btn-left { grid-column: 1; grid-row: 2; }
+#btn-right { grid-column: 3; grid-row: 2; }
+#btn-down { grid-column: 2; grid-row: 3; }
+
+.btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  background: radial-gradient(circle at 30% 30%, #888, #444);
+  color: white;
+  box-shadow:
+    inset -2px -2px 5px rgba(255,255,255,0.3),
+    inset 2px 2px 5px rgba(0,0,0,0.4),
+    2px 2px 6px rgba(0,0,0,0.6);
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+}
+
+.btn:active {
+  box-shadow:
+    inset 2px 2px 4px rgba(0,0,0,0.6),
+    inset -1px -1px 3px rgba(255,255,255,0.2);
+  transform: scale(0.94);
+}
+
+/* A y B en diagonal */
+.ab-buttons {
+  position: relative;
+  width: 120px;
+  height: 100px;
+}
+
+.btn-a {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: radial-gradient(circle at 30% 30%, #ff4d4d, #990000);
+}
+
+.btn-b {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: radial-gradient(circle at 30% 30%, #4d4dff, #000099);
+}
+
+/* ==================== Start y Select ==================== */
+.start-select {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.start-select button {
+  background: #444;
+  color: #eee;
+  border-radius: 12px;
+  padding: 6px 20px;
+  font-size: 12px;
+  border: none;
+  box-shadow: inset -1px -1px 2px #777, inset 1px 1px 2px #000;
+}
+
+/* ==================== Parlante inferior ==================== */
+.parlante {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.parlante div {
+  width: 4px;
+  height: 24px;
+  background: #222;
+  border-radius: 2px;
+  box-shadow: inset -1px -1px 2px rgba(255,255,255,0.2),
+              inset 1px 1px 2px rgba(0,0,0,0.5);
 }

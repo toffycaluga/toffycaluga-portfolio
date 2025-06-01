@@ -11,9 +11,9 @@ const menuOptions = ["menu_projects", "menu_skills", "menu_about", "menu_contact
 export function drawMenu(selectedOption) {
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#00ff88";
-    ctx.font = "20px monospace";
-    ctx.fillText(lang.menu_title, 260, 100);
+    ctx.fillStyle = "#008855";
+    ctx.font = "35px monospace";
+    ctx.fillText(lang.menu_title, 200, 100);
 
     menuOptions.forEach((key, index) => {
         ctx.fillStyle = index === selectedOption ? "#ffff00" : "#00ff88";

@@ -1,41 +1,39 @@
 import { setLanguage } from "../i18n/lang.js";
 import { drawMenu } from "./menu.js";
-import { showCanvas } from "../utils/screen.js";
 
 let selectedLang = 0;
 const options = ["Español", "English"];
 const codes = ["es", "en"];
 
 export function drawLanguageScreen() {
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
+  const canvas = document.getElementById("gameCanvas");
+  const ctx = canvas.getContext("2d");
 
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#00ff88";
-    ctx.font = "20px monospace";
-    ctx.fillText("Elige tu idioma / Choose your language:", 150, 100);
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#008855";
+  ctx.font = "35px monospace";
+  ctx.fillText("=== SELECT YOUR LANGUAGE ===", 120, 80);
+  ctx.fillText("Presiona START (A)/Enter", 180, 270);
 
-    options.forEach((lang, index) => {
-        ctx.fillStyle = index === selectedLang ? "#ffff00" : "#00ff88";
-        ctx.fillText(lang, 320, 160 + index * 40);
-    });
+  options.forEach((lang, index) => {
+    ctx.fillStyle = index === selectedLang ? "#ffff00" : "#00ff88";
+    ctx.fillText(lang, 320, 160 + index * 40);
+  });
 }
 
 export function handleLanguageInput(e) {
-    if (e.key === "ArrowUp") {
-        selectedLang = (selectedLang - 1 + options.length) % options.length;
-        drawLanguageScreen();
-    } else if (e.key === "ArrowDown") {
-        selectedLang = (selectedLang + 1) % options.length;
-        drawLanguageScreen();
-    }  else if (e.key === "Enter") {
+  if (e.key === "ArrowUp") {
+    selectedLang = (selectedLang - 1 + options.length) % options.length;
+    drawLanguageScreen();
+  } else if (e.key === "ArrowDown") {
+    selectedLang = (selectedLang + 1) % options.length;
+    drawLanguageScreen();
+  } else if (e.key === "Enter") {
     const langCode = codes[selectedLang];
     setLanguage(langCode).then(() => {
-        showCanvas(); // 👈 ESTA ES LA CLAVE
-        window.currentScreen = "menu";
-        drawMenu();
+      window.currentScreen = "menu";
+      drawMenu();
     });
-}
-
+  }
 }
