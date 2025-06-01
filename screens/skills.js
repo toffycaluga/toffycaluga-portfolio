@@ -1,4 +1,5 @@
 import { lang } from "../i18n/lang.js";
+import { playSound, sounds } from "./../utils/sound.js";
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
@@ -115,6 +116,7 @@ function renderSkills() {
 
 export function handleSkillsInput(e) {
     if (e.key === "ArrowDown") {
+        playSound(sounds.click)
         if (selectedSkillIndex < currentSkills.length - 1) {
             selectedSkillIndex++;
             if (selectedSkillIndex >= scrollOffset + visibleLines) {
@@ -123,6 +125,7 @@ export function handleSkillsInput(e) {
             renderSkills();
         }
     } else if (e.key === "ArrowUp") {
+        playSound(sounds.click)
         if (selectedSkillIndex > 0) {
             selectedSkillIndex--;
             if (selectedSkillIndex < scrollOffset) {
@@ -131,6 +134,7 @@ export function handleSkillsInput(e) {
             renderSkills();
         }
     } else if (e.key === "Escape") {
+        playSound(sounds.back)
         window.currentScreen = "menu";
         import("./menu.js").then(module => module.drawMenu());
     }

@@ -1,4 +1,6 @@
 import { lang } from "../i18n/lang.js";
+import { playSound, sounds } from "../utils/sound.js";
+
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
