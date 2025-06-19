@@ -35,5 +35,5 @@ Todo en una interfaz inspirada en las consolas clásicas de los años 80-90.
 ```bash
 git clone https://github.com/toffycaluga/dev-quest-portafolio.git
 cd dev-quest-portafolio
-npm install # si usas dependencias o bundler
+npm install 
 npm run dev  # o simplemente abre index.html en tu navegador
