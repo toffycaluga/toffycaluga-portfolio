@@ -1,12 +1,19 @@
 {
   "name": "toffy-portfolio-game",
   "version": "1.0.0",
-  "description": "Portafolio de Abraham Lillo (toffy Caluga)",
+  "description": "Portafolio de Abraham Lillo (Toffy Caluga)",
   "main": "index.js",
   "scripts": {
     "dev": "lite-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Abraham Lillo",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.4",
+    "socket.io-client": "^4.8.1"
+  },
+  "devDependencies": {
+    "lite-server": "^2.6.1"
+  }
 }
