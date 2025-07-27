@@ -122,3 +122,6 @@ document.getElementById("btn-left")?.addEventListener("click", () => simulateKey
 document.getElementById("btn-right")?.addEventListener("click", () => simulateKey("ArrowRight"));
 document.getElementById("btn-a")?.addEventListener("click", () => simulateKey("Enter"));
 document.getElementById("btn-b")?.addEventListener("click", () => simulateKey("Escape"));
+
+document.getElementById("btn-start")?.addEventListener("click", () => simulateKey("Enter"));
+document.getElementById("btn-select")?.addEventListener("click", () => simulateKey("Escape"));
