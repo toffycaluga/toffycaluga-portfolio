@@ -11,11 +11,35 @@ let scrollOffset = 0;
 const visibleLines = 8; // cantidad de skills visibles antes de hacer scroll
 const lineHeight = 50;
 
+// Mapea niveles en ES y EN al mismo valor numérico
 const nivelToValor = {
     "Básico": 3,
     "Intermedio": 6,
-    "Avanzado": 10
+    "Avanzado": 10,
+    "Basic": 3,
+    "Intermediate": 6,
+    "Advanced": 10
 };
+
+// Helpers para soportar JSON en español o inglés
+function getName(skill) {
+    // skills.es.json usa "nombre", skills.en.json usa "name"
+    return skill.nombre || skill.name || "";
+}
+
+function getLevel(skill) {
+    // skills.es.json usa "nivel", skills.en.json usa "level"
+    return skill.nivel || skill.level || "";
+}
+
+function getDescription(skill) {
+    // skills.es.json usa "descripcion", skills.en.json usa "description"
+    return skill.descripcion || skill.description || "";
+}
+
+function getLogo(skill) {
+    return skill.logo || "";
+}
 
 export function drawSkillsScreen(skills) {
     currentSkills = skills;
@@ -34,8 +58,13 @@ function renderSkills() {
         const y = 100 + (index - scrollOffset) * lineHeight;
         if (y < 100 || y > canvas.height - 100) return; // no dibujar fuera de pantalla
 
+        const skillName = getName(skill);
+        const skillLevel = getLevel(skill);
+        const skillDescription = getDescription(skill);
+        const skillLogo = getLogo(skill);
+
         const barWidth = 150;
-        const filledBars = nivelToValor[skill.nivel] || 0;
+        const filledBars = nivelToValor[skillLevel] || 0;
         const barX = 240;
 
         if (index === selectedSkillIndex) {
@@ -44,13 +73,15 @@ function renderSkills() {
         }
 
         // Logo
-        const img = new Image();
-        img.src = `./assets/icons/${skill.logo}`;
-        img.onload = () => ctx.drawImage(img, 20, y - 32, 32, 32);
+        if (skillLogo) {
+            const img = new Image();
+            img.src = `./assets/icons/${skillLogo}`;
+            img.onload = () => ctx.drawImage(img, 20, y - 32, 32, 32);
+        }
 
         // Nombre
         ctx.fillStyle = "#ffff00";
-        ctx.fillText(skill.nombre, 60, y);
+        ctx.fillText(skillName, 60, y);
 
         // Barra
         ctx.fillStyle = "#333";
@@ -58,12 +89,13 @@ function renderSkills() {
         ctx.fillStyle = "#00ff88";
         ctx.fillRect(barX, y - 16, (filledBars / 10) * barWidth, 20);
 
-        // Nivel y estado
+        // Nivel
         ctx.fillStyle = "#888";
         ctx.font = "25px monospace";
-        ctx.fillText(skill.nivel, barX + barWidth + 10, y);
+        ctx.fillText(skillLevel, barX + barWidth + 10, y);
 
-        // const estado = skill.estado === "aprendiendo" ? lang.skill_learning : lang.skill_mastered;
+        // Si más adelante quieres estado bilingüe, puedes usar getStatus() aquí.
+        // const estado = getStatus(skill) === "aprendiendo" ? lang.skill_learning : lang.skill_mastered;
         // ctx.fillStyle = "#aaa";
         // ctx.fillText(`(${estado})`, barX + barWidth + 90, y);
     });
@@ -71,6 +103,9 @@ function renderSkills() {
     // Panel lateral de descripción
     const selected = currentSkills[selectedSkillIndex];
     if (selected) {
+        const selectedName = getName(selected);
+        const selectedDescription = getDescription(selected);
+
         const panelX = 600;
         const panelY = 100;
         const panelWidth = 180;
@@ -83,15 +118,16 @@ function renderSkills() {
 
         ctx.fillStyle = "#ffff00";
         ctx.font = "25px monospace";
-        ctx.fillText(selected.nombre, panelX + 10, panelY + 25);
+        ctx.fillText(selectedName, panelX + 10, panelY + 25);
 
         ctx.fillStyle = "#ccc";
         ctx.font = "25px monospace";
 
         // Descripción (envuelta manualmente si es muy larga)
         const maxWidth = panelWidth - 20;
-        const words = selected.descripcion.split(" ");
-        let line = "", lineY = panelY + 50;
+        const words = selectedDescription.split(" ");
+        let line = "";
+        let lineY = panelY + 50;
 
         words.forEach((word) => {
             const testLine = line + word + " ";
@@ -113,10 +149,9 @@ function renderSkills() {
     ctx.fillText(lang.back_hint, 200, canvas.height - 20);
 }
 
-
 export function handleSkillsInput(e) {
     if (e.key === "ArrowDown") {
-        playSound(sounds.click)
+        playSound(sounds.click);
         if (selectedSkillIndex < currentSkills.length - 1) {
             selectedSkillIndex++;
             if (selectedSkillIndex >= scrollOffset + visibleLines) {
@@ -125,7 +160,7 @@ export function handleSkillsInput(e) {
             renderSkills();
         }
     } else if (e.key === "ArrowUp") {
-        playSound(sounds.click)
+        playSound(sounds.click);
         if (selectedSkillIndex > 0) {
             selectedSkillIndex--;
             if (selectedSkillIndex < scrollOffset) {
@@ -134,9 +169,8 @@ export function handleSkillsInput(e) {
             renderSkills();
         }
     } else if (e.key === "Escape") {
-        playSound(sounds.back)
+        playSound(sounds.back);
         window.currentScreen = "menu";
-        import("./menu.js").then(module => module.drawMenu());
+        import("./menu.js").then((module) => module.drawMenu());
     }
 }
-

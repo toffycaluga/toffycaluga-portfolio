@@ -1,39 +1,94 @@
-# 🎮 Toffy's Dev Quest
+# 🎮 Toffy's Dev Quest -- Portafolio Interactivo
 
-Un portafolio interactivo que combina desarrollo web y estética retro de videojuegos para mostrar mis habilidades como desarrollador fullstack y performer circense.
+**Toffy's Dev Quest** es un portafolio estilo videojuego retro que
+combina desarrollo web, creatividad visual y elementos de juegos
+clásicos para presentar mis habilidades como **desarrollador
+fullstack**, mi trayectoria como **artista circense** y mis proyectos
+profesionales.
 
-## 🕹️ Descripción
+Construido con **HTML5 Canvas**, **JavaScript modular**, **i18n**,
+**JSON dinámico** y una estética inspirada en consolas de los 80--90.
 
-Este proyecto es una experiencia estilo videojuego construida con HTML5 Canvas y JavaScript, donde el usuario navega entre distintas "pantallas" para conocer mis:
+------------------------------------------------------------------------
 
-- Proyectos destacados
-- Habilidades técnicas
-- Experiencia profesional
-- Formulario de contacto
+## 🧭 Objetivo del proyecto
 
-Todo en una interfaz inspirada en las consolas clásicas de los años 80-90.
+Crear un portafolio único que no solo muestre mis habilidades técnicas,
+sino que además refleje mi identidad artística, entregando una
+experiencia interactiva tipo videojuego y una navegación memorable.
 
-## 🚀 Tecnologías usadas
+------------------------------------------------------------------------
 
-- **JavaScript (modular, sin frameworks)**
-- **HTML5 Canvas API**
-- **CSS (custom style retro-pixel)**
-- **i18n multilenguaje** (JSON dinámico)
-- **Modular dynamic imports**
-- **Mailto handler para formulario de contacto**
+## 🚀 Tecnologías utilizadas
 
-## 🌐 Funcionalidades
+-   **JavaScript (ES Modules / sin frameworks)**
+-   **HTML5 Canvas API**
+-   **CSS personalizado estilo retro pixel-art**
+-   **Dynamic Imports**
+-   **JSON dinámico para proyectos y skills**
+-   **Sistema i18n (ES / EN)**
+-   **Mailto handler para formulario de contacto**
+-   **Audio retro (FX de navegación y clicks)**
 
-- 🎨 Menú principal estilo videojuego
-- 🌍 Soporte multilenguaje (ES / EN)
-- 📂 Visualización de proyectos desde archivo `projects.{lang}.json`
-- 🧑‍💻 Inputs HTML integrados al canvas para interactividad (formulario de contacto)
-- 🕵️ Navegación con teclado (flechas, Enter, Escape)
+------------------------------------------------------------------------
 
-## 🧪 Cómo probarlo
+## 🌍 Funcionalidades principales
 
-```bash
-git clone https://github.com/toffycaluga/dev-quest-portafolio.git
-cd dev-quest-portafolio
-npm install 
-npm run dev  # o simplemente abre index.html en tu navegador
+-   🎮 Menú principal estilo videojuego\
+-   🌐 Cambio de idioma (ES / EN)\
+-   📁 Proyectos cargados desde `projects.{lang}.json`\
+-   🧠 Skills con barra de nivel y panel lateral descriptivo\
+-   🕹️ Navegación con teclas (Flechas, Enter, Escape)\
+-   📬 Formulario de contacto integrado en la interfaz\
+-   💾 Carga modular de pantallas (`menu.js`, `skills.js`, etc.)\
+-   🔊 Sonidos al interactuar (click, back, move)
+
+------------------------------------------------------------------------
+
+## 📂 Estructura del proyecto
+
+    toffycaluga-portfolio/
+    │
+    ├── index.html                # Punto de entrada
+    ├── styles.css                # Estilos retro pixel-art
+    │
+    ├── /assets
+    │   ├── /icons                # Logos de skills
+    │   └── /audio                # Efectos de sonido
+    │
+    ├── /data
+    │   ├── projects.es.json      # Proyectos ES
+    │   ├── projects.en.json      # Proyectos EN
+    │   ├── skills.es.json        # Skills ES
+    │   └── skills.en.json        # Skills EN
+    │
+    ├── /i18n
+    │   ├── lang.js               # Controlador de idioma
+    │   ├── es.json               # Textos ES
+    │   └── en.json               # Textos EN
+    │
+    ├── /screens
+    │   ├── menu.js               # Pantalla principal
+    │   ├── projects.js           # Pantalla de proyectos
+    │   ├── skills.js             # Pantalla de habilidades
+    │   ├── experience.js         # Pantalla de experiencia
+    │   ├── contact.js            # Pantalla de contacto
+    │   └── utils.js              # Utilidades de render (si aplica)
+    │
+    └── package.json              # Dependencias / scripts opcionales
+
+------------------------------------------------------------------------
+
+## 🧪 Cómo ejecutarlo en local
+
+``` bash
+git clone https://github.com/toffycaluga/toffycaluga-portfolio.git
+cd toffycaluga-portfolio
+npm install
+npm run dev   # o abrir index.html directamente
+```
+
+------------------------------------------------------------------------
+
+
+⌨️ con ❤️ por [Abraham Lillo](https://github.com/toffycaluga)

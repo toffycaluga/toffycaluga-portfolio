@@ -60,7 +60,7 @@ window.addEventListener("DOMContentLoaded", () => {
       const email = document.getElementById("contact-email").value;
       const message = document.getElementById("contact-message").value;
 
-      window.location.href = `mailto:toffycaluga@gmail.com?subject=Contacto desde el portafolio&body=Nombre: ${name}%0ACorreo: ${email}%0AMensaje:%0A${message}`;
+      window.location.href = `mailto:p.abraham.lillo@gmail.com?subject=Contacto desde el portafolio&body=Nombre: ${name}%0ACorreo: ${email}%0AMensaje:%0A${message}`;
     });
   }
 });

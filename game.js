@@ -17,7 +17,7 @@ const menuOptions = [
 
 
 export function handleKeyDown(e) {
-    console.log("🌐 Idioma actual:", window.currentLang);
+    // console.log("🌐 Idioma actual:", window.currentLang);
     const langCode = window.currentLang || "es";
     if (currentScreen === "menu") {
         if (e.key === "ArrowUp") {
@@ -28,8 +28,8 @@ export function handleKeyDown(e) {
             drawMenu(selectedOption);
         } else if (e.key === "Enter") {
             const selected = menuOptions[selectedOption];
-            console.log("🔍 Opción seleccionada:", selected);
-            console.log("🌐 Idioma actual:", window.currentLang);
+            // console.log("🔍 Opción seleccionada:", selected);
+            // console.log("🌐 Idioma actual:", window.currentLang);
             const langCode = window.currentLang || "es";
             if (selected === "menu_projects") {
                 fetch(`data/projects.${langCode}.json`)

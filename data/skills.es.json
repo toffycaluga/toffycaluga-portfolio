@@ -36,15 +36,15 @@
   },
   {
     "nombre": "Python",
-    "nivel": "Básico",
-    "estado": "aprendiendo",
+    "nivel": "Intermedio",
+    "estado": "aprendido",
     "logo": "python.png",
     "descripcion": "Lenguaje de programación versátil y legible."
   },
   {
     "nombre": "Django",
-    "nivel": "Básico",
-    "estado": "aprendiendo",
+    "nivel": "Intermedio",
+    "estado": "aprendido",
     "logo": "django.png",
     "descripcion": "Framework robusto para construir aplicaciones web en Python."
   },

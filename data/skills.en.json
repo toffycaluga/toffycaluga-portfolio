@@ -1,0 +1,86 @@
+[
+  {
+    "name": "JavaScript",
+    "level": "Advanced",
+    "status": "learned",
+    "logo": "js.png",
+    "description": "Core language of the web, running in both browser and backend environments."
+  },
+  {
+    "name": "TypeScript",
+    "level": "Intermediate",
+    "status": "learned",
+    "logo": "ts.png",
+    "description": "Superset of JavaScript that adds static typing."
+  },
+  {
+    "name": "Astro.js",
+    "level": "Intermediate",
+    "status": "learned",
+    "logo": "astro.png",
+    "description": "Modern framework for fast, content-focused static websites."
+  },
+  {
+    "name": "React",
+    "level": "Intermediate",
+    "status": "learned",
+    "logo": "react.png",
+    "description": "Library for building interactive user interfaces using components."
+  },
+  {
+    "name": "Ruby on Rails",
+    "level": "Intermediate",
+    "status": "learned",
+    "logo": "rails.png",
+    "description": "MVC framework for building web applications with Ruby."
+  },
+  {
+    "name": "Python",
+    "level": "Intermediate",
+    "status": "learned",
+    "logo": "python.png",
+    "description": "Versatile and readable programming language."
+  },
+  {
+    "name": "Django",
+    "level": "Intermediate",
+    "status": "learned",
+    "logo": "django.png",
+    "description": "Robust framework for building web applications with Python."
+  },
+  {
+    "name": "PostgreSQL",
+    "level": "Intermediate",
+    "status": "learned",
+    "logo": "postgres.png",
+    "description": "Advanced open-source relational database system."
+  },
+  {
+    "name": "MongoDB",
+    "level": "Basic",
+    "status": "learned",
+    "logo": "mongodb.png",
+    "description": "Document-oriented NoSQL database."
+  },
+  {
+    "name": "Node.js",
+    "level": "Intermediate",
+    "status": "learned",
+    "logo": "node.png",
+    "description": "Runtime environment for running JavaScript on the server."
+  },
+  {
+    "name": "Express.js",
+    "level": "Intermediate",
+    "status": "learned",
+    "logo": "express.png",
+    "description": "Minimalist framework for building APIs in Node.js."
+  },
+  {
+    "name": "Git",
+    "level": "Advanced",
+    "status": "learned",
+    "logo": "git.png",
+    "description": "Distributed version control system."
+  }
+]
