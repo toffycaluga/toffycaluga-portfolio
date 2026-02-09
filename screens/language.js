@@ -16,7 +16,6 @@ if (!ctx) throw new Error("[language] No se pudo obtener contexto 2D");
 // Estado
 let selectedLang = 0;
 
-// Puedes extender esto a más idiomas sin tocar lógica
 const options = [
   { label: "Español", code: "es" },
   { label: "English", code: "en" },
@@ -50,13 +49,6 @@ export function handleLanguageInput(e) {
     );
     return;
   }
-
-  // Opcional: volver atrás (si tu game.js lo permite)
-  // if (e.key === "Escape") {
-  //   playSound?.(sounds?.back);
-  //   window.currentScreen = "menu";
-  //   drawMenu(0);
-  // }
 }
 
 async function applySelectedLanguage() {
@@ -65,40 +57,48 @@ async function applySelectedLanguage() {
 
   console.log("[language] Setting language ->", choice.code);
 
-  // Espera real para evitar que el menú se dibuje con lang vacío
   await setLanguage(choice.code);
 
   console.log("[language] currentLang =", window.currentLang);
 
   window.currentScreen = "menu";
-  drawMenu(0); // si tu drawMenu necesita índice, pásalo; si no, puedes usar drawMenu()
+  drawMenu(0);
 }
 
-// Render UI
 function render() {
   clearScreen(ctx, canvas);
   drawPanel(ctx, canvas);
 
-  // Título UI (sin hardcode del color/fuente)
-  ctx.fillStyle = THEME.colors.title;
-  ctx.font = TYPO.font("title");
-  ctx.fillText("=== LANGUAGE ===", 180, 85);
+  // ✅ Título centrado (ya lo hace drawTitle)
+  drawTitle(ctx, "Language");
 
-  // Subtítulo / instrucción
+  // ✅ Subtítulo centrado
   ctx.fillStyle = THEME.colors.text;
   ctx.font = TYPO.font("text");
-  ctx.fillText("Selecciona tu idioma y presiona Enter / (A)", LAYOUT.contentPadding, 125);
 
-  // Opciones
-  const startY = 180;
+  ctx.textAlign = "center";
+  const centerX = canvas.width / 2;
+
+  ctx.fillText(
+    "Selecciona tu idioma y presiona Enter / (A)",
+    centerX,
+    125
+  );
+
+  // ✅ Opciones centradas
+  const startY = 190;
   const gap = 40;
+
+  ctx.font = TYPO.font("section");
 
   options.forEach((opt, index) => {
     const isSelected = index === selectedLang;
     ctx.fillStyle = isSelected ? THEME.colors.label : THEME.colors.title;
-    ctx.font = TYPO.font("section");
-    ctx.fillText(opt.label, 320, startY + index * gap);
+    ctx.fillText(opt.label, centerX, startY + index * gap);
   });
+
+  // 🔁 restaurar
+  ctx.textAlign = "left";
 
   drawFooterHints(ctx, canvas, "↑ ↓ Cambiar", "Enter: Confirmar");
 }

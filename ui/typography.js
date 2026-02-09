@@ -2,10 +2,10 @@
 export const TYPO = {
   family: "monospace",
   size: {
-    title: "32px",
-    section: "25px",
-    label: "20px",
-    text: "20px",
+    title: "40px",
+    section: "35px",
+    label: "25px",
+    text: "25px",
     footer: "20px",
   },
   // Helpers para no repetir strings

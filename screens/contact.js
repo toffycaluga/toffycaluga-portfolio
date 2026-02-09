@@ -27,7 +27,7 @@ function render() {
   drawTitle(ctx, lang.menu_contact);
 
   drawInstructions();
-  drawFooterHints(ctx, canvas, "Completa el formulario", lang.back_hint);
+  drawFooterHints(ctx, canvas, lang.contact_footer_hint, lang.back_hint);
 }
 
 function drawInstructions() {
@@ -36,10 +36,10 @@ function drawInstructions() {
   ctx.fillStyle = THEME.colors.text;
   ctx.font = TYPO.font("text");
 
-  ctx.fillText("Puedes contactarme directamente desde este formulario.", LAYOUT.contentPadding, y);
+  ctx.fillText(lang.contact_instructions_1, LAYOUT.contentPadding, y);
   y += 30;
 
-  ctx.fillText("Responderé lo antes posible.", LAYOUT.contentPadding, y);
+  ctx.fillText(lang.contact_instructions_2, LAYOUT.contentPadding, y);
 }
 
 // ===============================
@@ -55,6 +55,13 @@ function showContactForm() {
   form.style.display = "flex";
   form.style.opacity = "1";
   form.style.pointerEvents = "auto";
+
+  form.style.maxWidth = "360px";
+  form.style.width = "80%";
+
+  form.style.marginTop = "20px";
+  form.style.marginLeft = "auto";
+  form.style.marginRight = "auto";
 }
 
 // Opcional: para ocultarlo desde fuera

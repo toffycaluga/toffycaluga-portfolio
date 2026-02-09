@@ -17,5 +17,11 @@
   "about_description_label": "Biografía",
   "about_experience_label": "Experiencia",
   "about_status_label": "Estado actual",
-  "about_contact_label": "Contacto"
+  "about_contact_label": "Contacto",
+  "contact_instructions_1": "Puedes contactarme directamente desde este formulario.",
+  "contact_instructions_2": "Responderé lo antes posible.",
+  "contact_footer_hint": "Completa el formulario",
+  "skills_nav_hint": "↑ ↓ Navegar",
+  "skills_detail_back_hint": "← / B Volver",
+  "skills_view_hint": "→ / Enter: Ver detalle"
 }

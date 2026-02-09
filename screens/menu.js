@@ -45,8 +45,10 @@ function render(selectedOption) {
 function drawOptions(selectedOption) {
   const startY = 140;
   const gap = 42;
+  const centerX = canvas.width / 2;
 
   ctx.font = TYPO.font("section");
+  ctx.textAlign = "center"; // 👈 clave
 
   menuOptions.forEach((key, index) => {
     const isSelected = index === selectedOption;
@@ -57,8 +59,11 @@ function drawOptions(selectedOption) {
 
     ctx.fillText(
       lang[key],
-      canvas.width / 2 - 80,
+      centerX,
       startY + index * gap
     );
   });
+
+  // 🔁 restaurar estado
+  ctx.textAlign = "left";
 }

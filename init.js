@@ -1,3 +1,4 @@
+// init.js
 import { drawLanguageScreen, handleLanguageInput } from "./screens/language.js";
 import { handleKeyDown } from "./game.js";
 import { drawIntroScreen } from "./screens/intro.js";
@@ -22,12 +23,19 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ✅ NO precargues aquí si intro.js ya lo hace
+  // Intro (no precargar aquí si intro.js ya lo hace)
   drawIntroScreen(() => {
     ready = true;
   });
 
   const globalKeyHandler = async (e) => {
+    if (!e?.key) return;
+
+    // Evita robar teclas cuando estás escribiendo en inputs/textarea (contact)
+    const tag = document.activeElement?.tagName;
+    const isTyping = tag === "INPUT" || tag === "TEXTAREA";
+    if (isTyping) return;
+
     // INTRO
     if (window.currentScreen === "intro") {
       if (!ready) return;
@@ -51,9 +59,10 @@ window.addEventListener("DOMContentLoaded", () => {
     await handleKeyDown(e);
   };
 
-  window.addEventListener("keydown", globalKeyHandler);
+  // 👇 IMPORTANTE: capture:true (y corregido true)
+  window.addEventListener("keydown", globalKeyHandler, { capture: true });
 
-  // Contact submit (mailto) — robusto
+  // Contact submit (mailto)
   const submitButton = document.getElementById("contact-submit");
   if (submitButton) {
     submitButton.addEventListener("click", () => {

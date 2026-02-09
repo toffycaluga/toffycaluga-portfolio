@@ -4,5 +4,5 @@ export const LAYOUT = {
   topOffset: 45,
   bottomOffset: 90,
   contentPadding: 40,
-  lineHeight: 22,
+  lineHeight: 32,
 };

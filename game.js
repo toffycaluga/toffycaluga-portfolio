@@ -1,13 +1,9 @@
+// game.js
 import { drawMenu } from "./screens/menu.js";
 import { drawProjectsScreen } from "./screens/projects.js";
 import { drawSkillsScreen, handleSkillsInput } from "./screens/skills.js";
 import { drawAboutScreen, handleAboutInput } from "./screens/about.js";
 
-// Si tu app tiene start/intro, puedes importarlos aquí (opcional):
-// import { drawStartScreen } from "./screens/start.js";
-// import { drawIntroScreen } from "./screens/intro.js";
-
-export let currentScreen = "menu";
 let selectedOption = 0;
 
 const menuOptions = [
@@ -67,6 +63,12 @@ function cleanupOnBackToMenu() {
   if (linksContainer) linksContainer.replaceChildren();
 }
 
+function goBackToMenu() {
+  window.currentScreen = "menu";
+  cleanupOnBackToMenu();
+  drawMenu(selectedOption);
+}
+
 async function openMenuOption(optionKey) {
   const langCode = requireLangCode();
   console.log("[game] Open option:", optionKey, "| lang:", langCode);
@@ -74,14 +76,14 @@ async function openMenuOption(optionKey) {
   if (optionKey === "menu_projects") {
     const cacheKey = `projects:${langCode}`;
     if (cachedProjects?.key === cacheKey) {
-      currentScreen = "projects";
+      window.currentScreen = "projects";
       drawProjectsScreen(cachedProjects.data);
       return;
     }
 
     const projects = await fetchJson(`data/projects.${langCode}.json`, "projects");
     cachedProjects = { key: cacheKey, data: projects };
-    currentScreen = "projects";
+    window.currentScreen = "projects";
     drawProjectsScreen(projects);
     return;
   }
@@ -89,14 +91,14 @@ async function openMenuOption(optionKey) {
   if (optionKey === "menu_skills") {
     const cacheKey = `skills:${langCode}`;
     if (cachedSkills?.key === cacheKey) {
-      currentScreen = "skills";
+      window.currentScreen = "skills";
       drawSkillsScreen(cachedSkills.data);
       return;
     }
 
     const skills = await fetchJson(`data/skills.${langCode}.json`, "skills");
     cachedSkills = { key: cacheKey, data: skills };
-    currentScreen = "skills";
+    window.currentScreen = "skills";
     drawSkillsScreen(skills);
     return;
   }
@@ -104,29 +106,28 @@ async function openMenuOption(optionKey) {
   if (optionKey === "menu_about") {
     const cacheKey = `about:${langCode}`;
     if (cachedAbout?.key === cacheKey) {
-      currentScreen = "about";
+      window.currentScreen = "about";
       drawAboutScreen(cachedAbout.data);
       return;
     }
 
     const about = await fetchJson(`data/about.${langCode}.json`, "about");
     cachedAbout = { key: cacheKey, data: about };
-    currentScreen = "about";
+    window.currentScreen = "about";
     drawAboutScreen(about);
     return;
   }
 
   if (optionKey === "menu_contact") {
-    currentScreen = "contact";
+    window.currentScreen = "contact";
     const mod = await import("./screens/contact.js");
     mod.drawContactScreen();
-    // OJO: tu contact mejorado ya no tiene setupContactForm obligatorio
-    // Si lo vuelves a tener, puedes llamar: mod.setupContactForm?.();
+    mod.setupContactForm?.();
     return;
   }
 
   if (optionKey === "menu_language") {
-    currentScreen = "language-select";
+    window.currentScreen = "language-select";
     const mod = await import("./screens/language.js");
     mod.drawLanguageScreen();
     return;
@@ -136,34 +137,47 @@ async function openMenuOption(optionKey) {
 }
 
 // ===============================
-// Input router
+// Input Router
 // ===============================
 export async function handleKeyDown(e) {
   if (!e?.key) return;
 
-  // Delegación por pantalla (antes que menú)
-  if (currentScreen === "skills") {
+  const screen = window.currentScreen;
+
+  // BACK global primero (para que About/Skills NO se lo coman)
+  const isBackKey =
+    e.key === "Escape" ||
+    e.key === "b" ||
+    e.key === "B";
+
+  if (
+    ["projects", "skills", "about", "contact", "language-select"].includes(screen) &&
+    isBackKey
+  ) {
+    e.preventDefault();
+    goBackToMenu();
+    return;
+  }
+
+  // Delegación por pantalla
+  if (screen === "skills") {
     handleSkillsInput(e);
     return;
   }
 
-  if (currentScreen === "about") {
+  if (screen === "about") {
     handleAboutInput(e);
     return;
   }
 
-  if (currentScreen === "language-select") {
+  if (screen === "language-select") {
     const mod = await import("./screens/language.js");
     mod.handleLanguageInput(e);
     return;
   }
 
-  // Si tienes intro/start:
-  // if (currentScreen === "start" && e.key === "Enter") { ... }
-  // if (currentScreen === "intro") { ... }
-
   // MENU
-  if (currentScreen === "menu") {
+  if (screen === "menu") {
     if (e.key === "ArrowUp") {
       selectedOption = (selectedOption - 1 + menuOptions.length) % menuOptions.length;
       drawMenu(selectedOption);
@@ -185,13 +199,5 @@ export async function handleKeyDown(e) {
       }
       return;
     }
-  }
-
-  // BACK (Escape) desde pantallas
-  if (["projects", "skills", "about", "contact", "language-select"].includes(currentScreen) && e.key === "Escape") {
-    currentScreen = "menu";
-    cleanupOnBackToMenu();
-    drawMenu(selectedOption);
-    return;
   }
 }

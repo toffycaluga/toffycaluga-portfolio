@@ -1,68 +1,111 @@
-// ui/draw.js
 import { THEME } from "./theme.js";
-import { TYPO } from "./typography.js";
 import { LAYOUT } from "./layout.js";
+import { TYPO } from "./typography.js";
 
+// Limpia canvas
 export function clearScreen(ctx, canvas) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = THEME.colors.bg;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
+// Dibuja panel principal (marco y fondo)
 export function drawPanel(ctx, canvas) {
-  const pad = LAYOUT.framePadding;
+  const x = LAYOUT.framePadding;
+  const y = LAYOUT.framePadding;
+  const w = canvas.width - LAYOUT.framePadding * 2;
+  const h = canvas.height - LAYOUT.framePadding * 2;
 
+  // Fondo panel
   ctx.fillStyle = THEME.colors.panelBg;
-  ctx.fillRect(pad, LAYOUT.topOffset, canvas.width - pad * 2, canvas.height - LAYOUT.bottomOffset);
+  ctx.fillRect(x, y, w, h);
 
+  // Borde
   ctx.strokeStyle = THEME.colors.panelBorder;
-  ctx.strokeRect(pad, LAYOUT.topOffset, canvas.width - pad * 2, canvas.height - LAYOUT.bottomOffset);
+  ctx.lineWidth = 2;
+  ctx.strokeRect(x, y, w, h);
+
+  // Inner glow (suave)
+  ctx.strokeStyle = THEME.colors.panelGlow;
+  ctx.lineWidth = 1;
+  ctx.strokeRect(x + 3, y + 3, w - 6, h - 6);
 }
 
-export function drawTitle(ctx, text, pageInfo = "") {
+// Título estilo consola
+export function drawTitle(ctx, titleText) {
   ctx.fillStyle = THEME.colors.title;
   ctx.font = TYPO.font("title");
-  const suffix = pageInfo ? ` (${pageInfo})` : "";
-  ctx.fillText(`=== ${text.toUpperCase()}${suffix} ===`, 90, 35);
+
+  ctx.textAlign = "center";          // 👈 clave
+  ctx.textBaseline = "top";
+
+  const centerX = ctx.canvas.width / 2;
+
+  ctx.fillText(
+    `=== ${String(titleText).toUpperCase()} ===`,
+    centerX,
+    LAYOUT.topOffset
+  );
+
+  // 🔁 MUY importante: restaurar alineación por defecto
+  ctx.textAlign = "left";
 }
 
-export function drawFooterHints(ctx, canvas, leftText, rightText) {
-  ctx.fillStyle = THEME.colors.hint;
+
+// Footer/hints
+export function drawFooterHints(ctx, canvas, leftHint = "", rightHint = "") {
+  const y = canvas.height - LAYOUT.bottomOffset;
+
   ctx.font = TYPO.font("footer");
-  ctx.fillText(leftText, LAYOUT.contentPadding, canvas.height - 35);
-  ctx.fillText(rightText, canvas.width - 220, canvas.height - 35);
+
+  // Izquierda
+  ctx.fillStyle = THEME.colors.hint;
+  if (leftHint) ctx.fillText(leftHint, LAYOUT.contentPadding, y);
+
+  // Derecha
+  if (rightHint) {
+    const width = ctx.measureText(rightHint).width;
+    ctx.fillText(rightHint, canvas.width - LAYOUT.contentPadding - width, y);
+  }
 }
 
-export function drawLabelValue(ctx, label, value, x, y) {
-  ctx.fillStyle = THEME.colors.label;
-  ctx.font = TYPO.font("label");
-  ctx.fillText(`${label}:`, x, y);
+/**
+ * Wrap real: dibuja y devuelve el nextY real.
+ * IMPORTANT: ctx.font debe estar seteado antes de llamar a wrapText().
+ */
+export function wrapText(ctx, text, x, y, {
+  maxWidth = 600,
+  lineHeight = 22,
+  maxLines = Infinity,
+} = {}) {
+  const safeText = String(text ?? "");
+  const words = safeText.split(/\s+/).filter(Boolean);
 
-  ctx.fillStyle = THEME.colors.value;
-  ctx.font = TYPO.font("label");
-  ctx.fillText(value, x + ctx.measureText(`${label}: `).width + 10, y);
-}
-
-export function wrapText(ctx, canvas, text, x, y) {
-  const maxWidth = canvas.width - LAYOUT.contentPadding * 2;
-  const words = String(text).split(" ");
   let line = "";
+  let linesUsed = 0;
 
-  ctx.font = TYPO.font("text");
-  ctx.fillStyle = THEME.colors.text;
+  for (let i = 0; i < words.length; i++) {
+    const testLine = line ? `${line} ${words[i]}` : words[i];
+    const width = ctx.measureText(testLine).width;
 
-  for (const word of words) {
-    const testLine = line + word + " ";
-    const { width } = ctx.measureText(testLine);
-
-    if (width > maxWidth) {
+    if (width > maxWidth && line) {
       ctx.fillText(line, x, y);
-      line = word + " ";
-      y += LAYOUT.lineHeight;
+      y += lineHeight;
+      linesUsed++;
+
+      if (linesUsed >= maxLines) return y;
+
+      line = words[i];
     } else {
       line = testLine;
     }
   }
 
-  if (line) ctx.fillText(line, x, y);
-  return y; // por si quieres continuar abajo
+  if (line && linesUsed < maxLines) {
+    ctx.fillText(line, x, y);
+    y += lineHeight;
+    linesUsed++;
+  }
+
+  return y; // ✅ nextY real
 }

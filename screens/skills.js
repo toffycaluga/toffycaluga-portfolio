@@ -1,7 +1,13 @@
 import { lang } from "../i18n/lang.js";
-import { playSound, sounds } from "./../utils/sound.js";
+import { playSound, sounds } from "../utils/sound.js";
 
-import { clearScreen, drawPanel, drawTitle, drawFooterHints, wrapText } from "../ui/draw.js";
+import {
+  clearScreen,
+  drawPanel,
+  drawTitle,
+  drawFooterHints,
+  wrapText,
+} from "../ui/draw.js";
 import { LAYOUT } from "../ui/layout.js";
 import { THEME } from "../ui/theme.js";
 import { TYPO } from "../ui/typography.js";
@@ -10,7 +16,7 @@ const canvas = document.getElementById("gameCanvas");
 if (!canvas) throw new Error("[skills] No se encontró #gameCanvas");
 
 const ctx = canvas.getContext("2d");
-if (!ctx) throw new Error("[skills] No se pudo obtener contexto 2D del canvas");
+if (!ctx) throw new Error("[skills] No se pudo obtener contexto 2D");
 
 // ===============================
 // ESTADO
@@ -18,12 +24,15 @@ if (!ctx) throw new Error("[skills] No se pudo obtener contexto 2D del canvas");
 let selectedSkillIndex = 0;
 let currentSkills = [];
 let scrollOffset = 0;
+let skillsMode = "list"; // "list" | "detail"
 
-// Ajusta según tu layout
+// animación slide
+let transition = null; // { from, to, start, duration }
+let rafId = null;
+
 const visibleLines = 8;
 const lineHeight = 44;
 
-// Mapea niveles ES/EN al mismo valor numérico (0–10)
 const nivelToValor = {
   Básico: 3,
   Intermedio: 6,
@@ -33,214 +42,212 @@ const nivelToValor = {
   Advanced: 10,
 };
 
-// Cache real de imágenes (no placeholders). Evita recrear Image() por render
-const iconCache = new Map(); // filename -> { img, status: "loading"|"loaded"|"error" }
+const iconCache = new Map();
+
+const getName = (s) => s?.nombre || s?.name || "";
+const getLevel = (s) => s?.nivel || s?.level || "";
+const getDescription = (s) => s?.descripcion || s?.description || "";
+const getLogo = (s) => s?.logo || "";
 
 // ===============================
-// HELPERS DATA (bilingüe)
+// ICONOS
 // ===============================
-function getName(skill) {
-  return skill?.nombre || skill?.name || "";
-}
-
-function getLevel(skill) {
-  return skill?.nivel || skill?.level || "";
-}
-
-function getDescription(skill) {
-  return skill?.descripcion || skill?.description || "";
-}
-
-function getLogo(skill) {
-  return skill?.logo || "";
-}
-
-// ===============================
-// VALIDACIONES (sin fallback)
-// ===============================
-function validateLangKeys() {
-  if (!lang) console.error("[i18n] lang es undefined/null");
-  if (!lang?.menu_skills) console.error("[i18n] Falta la key: lang.menu_skills", lang);
-  if (!lang?.back_hint) console.error("[i18n] Falta la key: lang.back_hint", lang);
-}
-
-function validateSkill(skill, index) {
-  if (!skill) {
-    console.error(`[skills] Skill vacío en índice ${index}`);
-    return;
-  }
-  if (!skill.nombre && !skill.name) {
-    console.error(`[skills] Skill sin nombre en índice ${index}`, skill);
-  }
-  if (!skill.nivel && !skill.level) {
-    console.error(`[skills] Skill sin nivel en índice ${index}`, skill);
-  }
-  if (!skill.descripcion && !skill.description) {
-    console.warn(`[skills] Skill sin descripción en índice ${index}`, skill);
-  }
-  if (!skill.logo) {
-    console.warn(`[skills] Skill sin logo en índice ${index}`, skill);
-  }
-}
-
-function clampSelection() {
-  if (!Array.isArray(currentSkills)) {
-    console.error("[skills] currentSkills no es un array", currentSkills);
-    currentSkills = [];
-    selectedSkillIndex = 0;
-    scrollOffset = 0;
-    return;
-  }
-
-  if (selectedSkillIndex < 0 || selectedSkillIndex >= currentSkills.length) {
-    console.error("[skills] selectedSkillIndex fuera de rango", {
-      selectedSkillIndex,
-      length: currentSkills.length,
-    });
-    selectedSkillIndex = 0;
-    scrollOffset = 0;
-  }
-}
-
-// ===============================
-// ICONOS (carga real + logs)
-// ===============================
-function preloadIcon(filename, skillContext) {
-  if (!filename) return;
-
-  if (iconCache.has(filename)) return;
+function preloadIcon(filename) {
+  if (!filename || iconCache.has(filename)) return;
 
   const img = new Image();
   iconCache.set(filename, { img, status: "loading" });
 
-  const src = `./assets/icons/${filename}`;
-
   img.onload = () => {
     iconCache.set(filename, { img, status: "loaded" });
-    console.log(`[skills] Icono cargado OK: ${src}`);
-    renderSkills(); // redibuja para que aparezca
+    renderSkills();
   };
 
   img.onerror = () => {
     iconCache.set(filename, { img, status: "error" });
-    console.error(`[skills] No se pudo cargar icono: ${src}`, "Skill:", skillContext);
+    console.error("[skills] No se pudo cargar icono:", filename);
   };
 
-  img.src = src;
+  img.src = `./assets/icons/${filename}`;
 }
 
 // ===============================
-// API PÚBLICA
+// API
 // ===============================
 export function drawSkillsScreen(skills) {
-  console.group("[skills] drawSkillsScreen");
-  console.log("skills recibido:", skills);
-  console.log("Array.isArray(skills):", Array.isArray(skills));
-  console.groupEnd();
-
-  validateLangKeys();
-
-  if (!Array.isArray(skills)) {
-    throw new Error("[skills] drawSkillsScreen esperaba un array de skills");
-  }
+  if (!Array.isArray(skills)) throw new Error("[skills] drawSkillsScreen esperaba un array");
 
   currentSkills = skills;
-
   selectedSkillIndex = 0;
   scrollOffset = 0;
+  skillsMode = "list";
+  transition = null;
 
-  // Precarga iconos (real)
-  currentSkills.forEach((s, i) => {
-    validateSkill(s, i);
-    preloadIcon(getLogo(s), s);
-  });
-
+  currentSkills.forEach((s) => preloadIcon(getLogo(s)));
   renderSkills();
 }
 
 export function handleSkillsInput(e) {
   if (!e?.key) return;
 
-  if (!Array.isArray(currentSkills)) {
-    console.error("[skills] currentSkills no es array en handleSkillsInput", currentSkills);
-    return;
-  }
+  const key = e.key;
 
-  if (e.key === "ArrowDown") {
-    playSound?.(sounds?.click);
+  const isUp = key === "ArrowUp";
+  const isDown = key === "ArrowDown";
+  const isRight = key === "ArrowRight";
+  const isLeft = key === "ArrowLeft";
+  const isEnter = key === "Enter";
+  const isEsc = key === "Escape";
+  const isA = key === "a" || key === "A";
+  const isB = key === "b" || key === "B";
 
-    if (selectedSkillIndex < currentSkills.length - 1) {
-      selectedSkillIndex++;
+  // si hay animación, ignoramos inputs para no romper
+  if (transition) return;
 
-      if (selectedSkillIndex >= scrollOffset + visibleLines) {
-        scrollOffset++;
-      }
-
-      console.log(
-        `[skills] Selected: ${selectedSkillIndex + 1}/${currentSkills.length} (scrollOffset=${scrollOffset})`,
-      );
-      renderSkills();
+  // ===============================
+  // MODO DETALLE
+  // ===============================
+  if (skillsMode === "detail") {
+    if (isLeft || isEsc || isB) {
+      playSound?.(sounds?.back);
+      startTransition("detail", "list");
     }
     return;
   }
 
-  if (e.key === "ArrowUp") {
+  // ===============================
+  // MODO LISTA
+  // ===============================
+  if (isDown && selectedSkillIndex < currentSkills.length - 1) {
     playSound?.(sounds?.click);
-
-    if (selectedSkillIndex > 0) {
-      selectedSkillIndex--;
-
-      if (selectedSkillIndex < scrollOffset) {
-        scrollOffset--;
-      }
-
-      console.log(
-        `[skills] Selected: ${selectedSkillIndex + 1}/${currentSkills.length} (scrollOffset=${scrollOffset})`,
-      );
-      renderSkills();
-    }
+    selectedSkillIndex++;
+    if (selectedSkillIndex >= scrollOffset + visibleLines) scrollOffset++;
+    renderSkills();
     return;
   }
 
-  // Escape lo maneja game.js (volver y limpiar)
-  // Si igual quieres mantenerlo aquí, deja solo el cambio de pantalla.
-  if (e.key === "Escape") {
-    playSound?.(sounds?.back);
-    window.currentScreen = "menu";
-    import("./menu.js").then((module) => module.drawMenu(0));
+  if (isUp && selectedSkillIndex > 0) {
+    playSound?.(sounds?.click);
+    selectedSkillIndex--;
+    if (selectedSkillIndex < scrollOffset) scrollOffset--;
+    renderSkills();
+    return;
   }
+
+  // Abrir detalle SOLO con → / Enter / A
+  if (isRight || isEnter || isA) {
+    playSound?.(sounds?.enter);
+    startTransition("list", "detail");
+    return;
+  }
+
+  // Escape (menu) lo maneja game.js
+}
+
+// ===============================
+// ANIMACIÓN
+// ===============================
+function easeOutCubic(t) {
+  return 1 - Math.pow(1 - t, 3);
+}
+
+function startTransition(from, to) {
+  transition = {
+    from,
+    to,
+    start: performance.now(),
+    duration: 220, // ms
+  };
+
+  if (rafId) cancelAnimationFrame(rafId);
+
+  const tick = () => {
+    renderSkills();
+    if (transition) rafId = requestAnimationFrame(tick);
+  };
+
+  rafId = requestAnimationFrame(tick);
 }
 
 // ===============================
 // RENDER
 // ===============================
 function renderSkills() {
-  validateLangKeys();
-  clampSelection();
-
   clearScreen(ctx, canvas);
   drawPanel(ctx, canvas);
   drawTitle(ctx, lang.menu_skills);
 
-  drawSkillsList();
-  drawSidePanel();
+  // transición
+  if (transition) {
+    const now = performance.now();
+    const raw = (now - transition.start) / transition.duration;
+    const t = Math.min(Math.max(raw, 0), 1);
+    const p = easeOutCubic(t);
 
-  drawFooterHints(ctx, canvas, "↑ ↓ Navegar", lang.back_hint);
+    const slideW = canvas.width; // distancia de slide
+
+    // list -> detail
+    if (transition.from === "list" && transition.to === "detail") {
+      // lista sale hacia la izquierda
+      drawSkillsList(-p * slideW);
+
+      // detalle entra desde la derecha
+      drawSkillDetail((1 - p) * slideW);
+
+      // footer durante animación (opcional: vacío)
+      drawFooterHints(ctx, canvas, "", "");
+    }
+
+    // detail -> list
+    if (transition.from === "detail" && transition.to === "list") {
+      // detalle sale hacia la derecha
+      drawSkillDetail(p * slideW);
+
+      // lista entra desde la izquierda
+      drawSkillsList(-(1 - p) * slideW);
+
+      drawFooterHints(ctx, canvas, "", "");
+    }
+
+    // fin animación
+    if (t >= 1) {
+      skillsMode = transition.to;
+      transition = null;
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = null;
+
+      // render final limpio
+      renderSkills();
+    }
+
+    return;
+  }
+
+  // render normal
+  if (skillsMode === "detail") {
+    drawSkillDetail(0);
+    drawFooterHints(ctx, canvas, lang.skills_detail_back_hint, "");
+    return;
+  }
+
+  drawSkillsList(0);
+  drawFooterHints(ctx, canvas, lang.skills_nav_hint, lang.back_hint);
 }
 
-function drawSkillsList() {
+// ===============================
+// LISTA (sin side panel)
+// ===============================
+function drawSkillsList(offsetX = 0) {
+  ctx.save();
+  ctx.translate(offsetX, 0);
+
   const listX = LAYOUT.contentPadding;
   const listY = 110;
-
-  // Fondo de área lista (opcional sutil)
-  // ctx.fillStyle = "rgba(0,0,0,0.2)";
-  // ctx.fillRect(listX - 10, listY - 30, 520, 420);
+  const rowW = 520;
 
   currentSkills.forEach((skill, index) => {
     const y = listY + (index - scrollOffset) * lineHeight;
     if (y < listY || y > canvas.height - 110) return;
-
-    validateSkill(skill, index);
 
     const name = getName(skill);
     const level = getLevel(skill);
@@ -249,12 +256,17 @@ function drawSkillsList() {
     // Selección
     if (index === selectedSkillIndex) {
       ctx.fillStyle = THEME.colors.selectedBg;
-      ctx.fillRect(listX - 10, y - 24, 520, 38);
+      ctx.fillRect(listX - 10, y - 24, rowW, 38);
     }
 
-    // Icono (solo si cargó)
+    // Flecha a la derecha (todas)
+    ctx.fillStyle = index === selectedSkillIndex ? THEME.colors.label : THEME.colors.hint;
+    ctx.font = TYPO.font("label");
+    // ✅ dentro del ancho de la fila (sin desbordar)
+    ctx.fillText(">", listX - 10 + rowW + 70, y);
+
+    // Icono
     if (logo) {
-      preloadIcon(logo, skill);
       const entry = iconCache.get(logo);
       if (entry?.status === "loaded") {
         ctx.drawImage(entry.img, listX, y - 24, 26, 26);
@@ -266,7 +278,7 @@ function drawSkillsList() {
     ctx.font = TYPO.font("label");
     ctx.fillText(name, listX + 34, y);
 
-    // Barra nivel
+    // Barra nivel (lista sí)
     const barX = listX + 260;
     const barY = y - 14;
     const barW = 160;
@@ -275,53 +287,69 @@ function drawSkillsList() {
     ctx.fillStyle = THEME.colors.barBg;
     ctx.fillRect(barX, barY, barW, barH);
 
-    const filled = nivelToValor[level];
-    if (level && filled === undefined) {
-      console.error(`[skills] Nivel no reconocido "${level}". Revisa nivelToValor o JSON.`, skill);
-    }
-    if (filled !== undefined) {
-      ctx.fillStyle = THEME.colors.barFill;
-      ctx.fillRect(barX, barY, (filled / 10) * barW, barH);
-    }
+    const filled = nivelToValor[level] ?? 0;
+    ctx.fillStyle = THEME.colors.barFill;
+    ctx.fillRect(barX, barY, (filled / 10) * barW, barH);
 
     // Texto nivel
     ctx.fillStyle = THEME.colors.hint;
     ctx.font = TYPO.font("footer");
     ctx.fillText(level, barX + barW + 10, y);
   });
+
+  ctx.restore();
 }
 
-function drawSidePanel() {
-  const selected = currentSkills[selectedSkillIndex];
-  if (!selected) return;
+// ===============================
+// DETALLE (aparece SOLO al entrar)
+// ===============================
+function drawSkillDetail(offsetX = 0) {
+  const skill = currentSkills[selectedSkillIndex];
+  if (!skill) return;
 
-  const panelX = 600;
-  const panelY = 105;
-  const panelW = 280;
-  const panelH = 360;
+  ctx.save();
+  ctx.translate(offsetX, 0);
 
-  // Panel lateral
+  const name = getName(skill);
+  const desc = getDescription(skill);
+  const logo = getLogo(skill);
+
+  const x = LAYOUT.contentPadding;
+  const y = 120;
+  const w = canvas.width - LAYOUT.contentPadding * 2;
+  const h = canvas.height - 170;
+
+  // Panel
   ctx.fillStyle = THEME.colors.panelBg;
-  ctx.fillRect(panelX, panelY, panelW, panelH);
-
+  ctx.fillRect(x, y, w, h);
   ctx.strokeStyle = THEME.colors.panelBorder;
-  ctx.strokeRect(panelX, panelY, panelW, panelH);
+  ctx.lineWidth = 2;
+  ctx.strokeRect(x, y, w, h);
 
-  const name = getName(selected);
-  const desc = getDescription(selected);
-
-  // Título skill
-  ctx.fillStyle = THEME.colors.label;
-  ctx.font = TYPO.font("section");
-  ctx.fillText(name, panelX + 12, panelY + 30);
-
-  // Descripción
-  if (desc != null && typeof desc !== "string") {
-    console.error("[skills] La descripción no es string. Revisa JSON:", desc, selected);
+  // Icono (si existe)
+  if (logo) {
+    preloadIcon(logo);
+    const entry = iconCache.get(logo);
+    if (entry?.status === "loaded") {
+      ctx.drawImage(entry.img, x + 16, y + 16, 34, 34);
+    }
   }
 
+  // Título
+  ctx.fillStyle = THEME.colors.label;
+  ctx.font = TYPO.font("section");
+  ctx.fillText(name, x + 60, y + 40);
+
+  // ✅ SIN barra ni nivel en detalle (limpio)
   ctx.fillStyle = THEME.colors.text;
   ctx.font = TYPO.font("text");
 
-  wrapText(ctx, canvas, String(desc ?? ""), panelX + 12, panelY + 60);
+  // subimos descripción para aprovechar espacio
+  wrapText(ctx, String(desc ?? ""), x + 16, y + 85, {
+    maxWidth: w - 32,
+    lineHeight: LAYOUT.lineHeight,
+    maxLines: 999,
+  });
+
+  ctx.restore();
 }
