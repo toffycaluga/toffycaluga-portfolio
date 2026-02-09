@@ -1,18 +1,19 @@
 {
   "nombre_real": "Abraham Lillo",
   "nombre_artistico": "Toffy Caluga",
-  "descripcion": "Fullstack developer with a unique journey: 16 years as a professional circus clown. Combining stage creativity with web development, he builds tools for artists and circus management platforms.",
+  "descripcion": "Full-stack software engineer focused on building clear, maintainable, and user-centered digital products. Experience developing web applications, administrative systems, and multilingual platforms, with a strong foundation in JavaScript, Ruby on Rails, and modern frontend architecture.",
   "experiencia": [
-    "🎪 16 years touring internationally as a professional clown.",
-    "💻 Freelance web developer using JavaScript, Ruby on Rails, and Astro.js.",
-    "🚀 Currently working at Desafío Latam as a technical tutor."
+    "💻 Full-stack web application development using JavaScript, Ruby on Rails, Astro.js, and PostgreSQL.",
+    "🧩 Product-oriented system design: admin dashboards, multi-user workflows, i18n, and performance optimization.",
+    "🎓 Technical tutor at Desafío Latam, supporting learning processes in web development and best practices.",
+    "🎭 Creative background in performing arts, contributing effective communication, lateral thinking, and a human-centered approach to digital product development."
   ],
   "estado_actual": [
-    "🌱 Learning Python, Django, and Artificial Intelligence.",
-    "🤝 Open to creative collaborations and socially impactful projects."
+    "🚀 Deepening knowledge in Python, Django, and Artificial Intelligence applied to real-world products.",
+    "🤝 Open to job opportunities, freelance projects, and long-term technical collaborations."
   ],
   "contacto": {
-    "email": "abraham.lillol@gmail.com",
+    "email": "p.abraham.lillo@gmail.com",
     "portafolio": "https://toffycaluga-portfolio.cirxoft.app",
     "linkedin": "https://www.linkedin.com/in/abraham-lillo-lillo"
   }

@@ -1,86 +1,134 @@
 [
   {
     "name": "JavaScript",
+    "category": "frontend",
     "level": "Advanced",
     "status": "learned",
+    "primary": true,
     "logo": "js.png",
-    "description": "Core language of the web, running in both browser and backend environments."
+    "used_in_projects": ["CircAdmin", "Flying Cáceres", "Portfolio"],
+    "experience_type": "production",
+    "description": "Core language of the web, used in both frontend and backend development."
   },
   {
     "name": "TypeScript",
+    "category": "frontend",
     "level": "Intermediate",
     "status": "learned",
+    "primary": true,
     "logo": "ts.png",
-    "description": "Superset of JavaScript that adds static typing."
+    "used_in_projects": ["Portfolio", "Flying Cáceres"],
+    "experience_type": "production",
+    "description": "JavaScript superset that adds static typing for more robust applications."
   },
   {
     "name": "Astro.js",
+    "category": "frontend",
     "level": "Intermediate",
     "status": "learned",
+    "primary": true,
     "logo": "astro.png",
-    "description": "Modern framework for fast, content-focused static websites."
+    "used_in_projects": ["Portfolio", "Flying Cáceres"],
+    "experience_type": "production",
+    "description": "Modern framework for building fast, content-focused websites."
   },
   {
     "name": "React",
+    "category": "frontend",
     "level": "Intermediate",
     "status": "learned",
+    "primary": true,
     "logo": "react.png",
+    "used_in_projects": ["Portfolio"],
+    "experience_type": "production",
     "description": "Library for building interactive user interfaces using components."
   },
   {
     "name": "Ruby on Rails",
+    "category": "backend",
     "level": "Intermediate",
     "status": "learned",
+    "primary": true,
     "logo": "rails.png",
-    "description": "MVC framework for building web applications with Ruby."
+    "used_in_projects": ["CircAdmin"],
+    "experience_type": "production",
+    "description": "MVC framework for building scalable and maintainable web applications in Ruby."
   },
   {
     "name": "Python",
+    "category": "backend",
     "level": "Intermediate",
     "status": "learned",
+    "primary": true,
     "logo": "python.png",
-    "description": "Versatile and readable programming language."
+    "used_in_projects": ["Personal Systems", "Academic Projects"],
+    "experience_type": "academic",
+    "description": "Versatile and readable programming language used for backend and automation."
   },
   {
     "name": "Django",
+    "category": "backend",
     "level": "Intermediate",
     "status": "learned",
+    "primary": true,
     "logo": "django.png",
-    "description": "Robust framework for building web applications with Python."
+    "used_in_projects": ["Academic Projects"],
+    "experience_type": "academic",
+    "description": "Robust Python framework for building secure and scalable web applications."
   },
   {
     "name": "PostgreSQL",
+    "category": "database",
     "level": "Intermediate",
     "status": "learned",
+    "primary": true,
     "logo": "postgres.png",
-    "description": "Advanced open-source relational database system."
+    "used_in_projects": ["CircAdmin"],
+    "experience_type": "production",
+    "description": "Advanced open-source relational database focused on reliability and performance."
   },
   {
     "name": "MongoDB",
+    "category": "database",
     "level": "Basic",
     "status": "learned",
+    "primary": false,
     "logo": "mongodb.png",
-    "description": "Document-oriented NoSQL database."
+    "used_in_projects": ["Academic Projects"],
+    "experience_type": "academic",
+    "description": "NoSQL document-oriented database for flexible data models."
   },
   {
     "name": "Node.js",
+    "category": "backend",
     "level": "Intermediate",
     "status": "learned",
+    "primary": true,
     "logo": "node.png",
-    "description": "Runtime environment for running JavaScript on the server."
+    "used_in_projects": ["Personal Systems"],
+    "experience_type": "production",
+    "description": "JavaScript runtime environment for server-side applications."
   },
   {
     "name": "Express.js",
+    "category": "backend",
     "level": "Intermediate",
     "status": "learned",
+    "primary": false,
     "logo": "express.png",
-    "description": "Minimalist framework for building APIs in Node.js."
+    "used_in_projects": ["Personal Systems"],
+    "experience_type": "production",
+    "description": "Minimalist framework for building REST APIs with Node.js."
   },
   {
     "name": "Git",
+    "category": "tooling",
     "level": "Advanced",
     "status": "learned",
+    "primary": true,
     "logo": "git.png",
-    "description": "Distributed version control system."
+    "used_in_projects": ["CircAdmin", "Flying Cáceres", "Portfolio"],
+    "experience_type": "production",
+    "description": "Distributed version control system for collaborative development."
   }
 ]

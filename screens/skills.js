@@ -48,6 +48,12 @@ const getName = (s) => s?.nombre || s?.name || "";
 const getLevel = (s) => s?.nivel || s?.level || "";
 const getDescription = (s) => s?.descripcion || s?.description || "";
 const getLogo = (s) => s?.logo || "";
+const getCategory = (s) => s?.categoria || s?.category || "";
+const getStatus = (s) => s?.estado || s?.status || "";
+const getPrimary = (s) => s?.principal ?? s?.primary ?? false;
+const getUsedInProjects = (s) => s?.usado_en_proyectos || s?.used_in_projects || [];
+const getExperienceType = (s) => s?.tipo_experiencia || s?.experience_type || "";
+
 
 // ===============================
 // ICONOS
@@ -314,42 +320,182 @@ function drawSkillDetail(offsetX = 0) {
   const desc = getDescription(skill);
   const logo = getLogo(skill);
 
+  const category = getCategory(skill);
+  const level = getLevel(skill);
+  const status = getStatus(skill);
+  const primary = getPrimary(skill);
+  const usedIn = getUsedInProjects(skill);
+  const expType = getExperienceType(skill);
+
   const x = LAYOUT.contentPadding;
   const y = 120;
   const w = canvas.width - LAYOUT.contentPadding * 2;
   const h = canvas.height - 170;
 
-  // Panel
+  // ===== Panel base =====
   ctx.fillStyle = THEME.colors.panelBg;
   ctx.fillRect(x, y, w, h);
   ctx.strokeStyle = THEME.colors.panelBorder;
   ctx.lineWidth = 2;
   ctx.strokeRect(x, y, w, h);
 
-  // Icono (si existe)
+  const pad = 18;
+  const innerX = x + pad;
+  const innerY = y + pad;
+  const innerW = w - pad * 2;
+
+  // ===== Header =====
+  const iconSize = 34;
+  const titleX = innerX + iconSize + 12;
+  const titleY = innerY + 18;
+
+  // Icon
   if (logo) {
     preloadIcon(logo);
     const entry = iconCache.get(logo);
     if (entry?.status === "loaded") {
-      ctx.drawImage(entry.img, x + 16, y + 16, 34, 34);
+      ctx.drawImage(entry.img, innerX, innerY, iconSize, iconSize);
+    } else {
+      // placeholder suave (si aún carga)
+      ctx.strokeStyle = THEME.colors.panelBorder;
+      ctx.strokeRect(innerX, innerY, iconSize, iconSize);
     }
   }
 
-  // Título
+  // Title
   ctx.fillStyle = THEME.colors.label;
   ctx.font = TYPO.font("section");
-  ctx.fillText(name, x + 60, y + 40);
+  ctx.fillText(name, titleX, titleY-20);
 
-  // ✅ SIN barra ni nivel en detalle (limpio)
-  ctx.fillStyle = THEME.colors.text;
-  ctx.font = TYPO.font("text");
+  // Línea separadora bajo header
+  ctx.strokeStyle = THEME.colors.panelBorder;
+  ctx.globalAlpha = 0.7;
+  ctx.beginPath();
+  ctx.moveTo(innerX, innerY + 48);
+  ctx.lineTo(innerX + innerW, innerY + 48);
+  ctx.stroke();
+  ctx.globalAlpha = 1;
 
-  // subimos descripción para aprovechar espacio
-  wrapText(ctx, String(desc ?? ""), x + 16, y + 85, {
-    maxWidth: w - 32,
-    lineHeight: LAYOUT.lineHeight,
-    maxLines: 999,
+  // ===== Badges (chips) =====
+  const chipY1 = innerY + 74;
+  let chipX = innerX;
+
+  const drawChip = (text, cx, cy) => {
+    if (!text) return 0;
+
+    ctx.font = TYPO.font("footer");
+    const padX = 10;
+    const chipH = 24;
+    const textW = ctx.measureText(text).width;
+    const chipW = textW + padX * 2;
+
+    // fondo badge
+    ctx.fillStyle = THEME.colors.selectedBg;
+    ctx.fillRect(cx, cy - chipH + 6, chipW, chipH);
+
+    // borde sutil
+    ctx.strokeStyle = THEME.colors.panelBorder;
+    ctx.globalAlpha = 0.6;
+    ctx.strokeRect(cx, cy - chipH + 6, chipW, chipH);
+    ctx.globalAlpha = 1;
+
+    // texto
+    ctx.fillStyle = THEME.colors.label;
+    ctx.fillText(text, cx + padX, cy-15);
+
+    return chipW + 10;
+  };
+
+  const chips = [
+    category ? `Category: ${category}` : "",
+    level ? `Level: ${level}` : "",
+    status ? `Status: ${status}` : "",
+    primary ? "Primary" : "",
+  ].filter(Boolean);
+
+  // si no caben, bajan a segunda fila
+  let rowY = chipY1;
+  chips.forEach((c) => {
+    const testW = ctx.measureText(c).width + 20 + 10; // aprox chip
+    if (chipX + testW > innerX + innerW) {
+      chipX = innerX;
+      rowY += 30;
+    }
+    chipX += drawChip(c, chipX, rowY);
   });
+
+  // Cursor para secciones
+  let cursorY = rowY + 34;
+
+  const drawDivider = () => {
+    ctx.strokeStyle = THEME.colors.panelBorder;
+    ctx.globalAlpha = 0.5;
+    ctx.beginPath();
+    ctx.moveTo(innerX, cursorY);
+    ctx.lineTo(innerX + innerW, cursorY);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    cursorY += 18;
+  };
+
+  const drawSectionTitle = (title) => {
+    ctx.fillStyle = THEME.colors.label;
+    ctx.font = TYPO.font("label");
+    ctx.fillText(title, innerX, cursorY);
+    cursorY += 18;
+  };
+
+  const drawParagraph = (text) => {
+    ctx.fillStyle = THEME.colors.text;
+    ctx.font = TYPO.font("text");
+    wrapText(ctx, String(text ?? ""), innerX, cursorY, {
+      maxWidth: innerW,
+      lineHeight: LAYOUT.lineHeight,
+      maxLines: 999,
+    });
+    // avance aproximado razonable
+    const approxLines = Math.max(2, Math.min(10, Math.ceil(String(text ?? "").length / 52)));
+    cursorY += approxLines * LAYOUT.lineHeight + 10;
+  };
+
+  const drawBullets = (items) => {
+    if (!items?.length) return;
+    ctx.fillStyle = THEME.colors.text;
+    ctx.font = TYPO.font("text");
+
+    items.forEach((item) => {
+      // bullet
+      ctx.fillText("•", innerX, cursorY);
+      wrapText(ctx, String(item), innerX + 18, cursorY, {
+        maxWidth: innerW - 18,
+        lineHeight: LAYOUT.lineHeight,
+        maxLines: 3,
+      });
+      // avance
+      const approxLines = Math.max(1, Math.min(3, Math.ceil(String(item).length / 40)));
+      cursorY += approxLines * LAYOUT.lineHeight;
+    });
+
+    cursorY += 8;
+  };
+
+  // ===== Secciones =====
+  drawDivider();
+
+  if (desc) {
+    drawSectionTitle("Description");
+    drawParagraph(desc);
+  }
+
+  if (Array.isArray(usedIn) && usedIn.length) {
+    drawSectionTitle("Used in projects");
+    drawBullets(usedIn);
+  }
+
+  if (expType) {
+    drawSectionTitle("Experience type");
+    drawParagraph(expType);
+  }
 
   ctx.restore();
 }
