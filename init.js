@@ -1,4 +1,3 @@
-// init.js
 import { drawLanguageScreen, handleLanguageInput } from "./screens/language.js";
 import { handleKeyDown } from "./game.js";
 import { drawIntroScreen } from "./screens/intro.js";
@@ -11,11 +10,12 @@ let isAudioOn = true;
 let ready = false;
 
 window.addEventListener("DOMContentLoaded", () => {
+  // =========================
+  // Audio toggle
+  // =========================
   const audioToggle = document.getElementById("audio-toggle");
-
   if (audioToggle) {
     isAudioOn = audioToggle.checked;
-
     audioToggle.addEventListener("change", () => {
       isAudioOn = audioToggle.checked;
       if (isAudioOn) playBackgroundMusic();
@@ -23,18 +23,18 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Intro (no precargar aquí si intro.js ya lo hace)
+  // =========================
+  // Intro
+  // =========================
   drawIntroScreen(() => {
     ready = true;
   });
 
+  // =========================
+  // Keyboard router (tu lógica)
+  // =========================
   const globalKeyHandler = async (e) => {
     if (!e?.key) return;
-
-    // Evita robar teclas cuando estás escribiendo en inputs/textarea (contact)
-    const tag = document.activeElement?.tagName;
-    const isTyping = tag === "INPUT" || tag === "TEXTAREA";
-    if (isTyping) return;
 
     // INTRO
     if (window.currentScreen === "intro") {
@@ -42,7 +42,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
       if (e.key === "Enter" || e.key.toLowerCase() === "a") {
         if (isAudioOn) playBackgroundMusic();
-
         window.currentScreen = "language-select";
         drawLanguageScreen();
       }
@@ -59,10 +58,16 @@ window.addEventListener("DOMContentLoaded", () => {
     await handleKeyDown(e);
   };
 
-  // 👇 IMPORTANTE: capture:true (y corregido true)
-  window.addEventListener("keydown", globalKeyHandler, { capture: true });
+  window.addEventListener("keydown", globalKeyHandler);
 
+  // =========================
+  // GameBoy Buttons -> Keyboard
+  // =========================
+  setupGameboyControls();
+
+  // =========================
   // Contact submit (mailto)
+  // =========================
   const submitButton = document.getElementById("contact-submit");
   if (submitButton) {
     submitButton.addEventListener("click", () => {
@@ -81,3 +86,55 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+// ======================================================
+// Helpers: Simular teclas desde botones del GameBoy
+// ======================================================
+function setupGameboyControls() {
+  // Mapeo solicitado:
+  // A = Enter | B = Escape | Start = Enter | Select = Escape | D-pad = arrows
+  const bindings = [
+    ["btn-a", "Enter"],
+    ["btn-b", "Escape"],
+    ["btn-start", "Enter"],
+    ["btn-select", "Escape"],
+    ["btn-up", "ArrowUp"],
+    ["btn-down", "ArrowDown"],
+    ["btn-left", "ArrowLeft"],
+    ["btn-right", "ArrowRight"],
+  ];
+
+  bindings.forEach(([id, key]) => bindButtonToKey(id, key));
+}
+
+// click/touch -> dispatch KeyboardEvent (keydown)
+function bindButtonToKey(buttonId, key) {
+  const el = document.getElementById(buttonId);
+  if (!el) return;
+
+  const fire = () => {
+    // Dispara "keydown" como si fuese teclado
+    const evt = new KeyboardEvent("keydown", {
+      key,
+      bubbles: true,
+      cancelable: true,
+    });
+    window.dispatchEvent(evt);
+  };
+
+  // click
+  el.addEventListener("click", (e) => {
+    e.preventDefault();
+    fire();
+  });
+
+  // touch (mobile)
+  el.addEventListener(
+    "touchstart",
+    (e) => {
+      e.preventDefault();
+      fire();
+    },
+    { passive: false }
+  );
+}
