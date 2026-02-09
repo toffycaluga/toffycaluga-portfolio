@@ -1,86 +1,86 @@
 [
   {
-    "nombre": "JavaScript",
-    "nivel": "Avanzado",
-    "estado": "aprendido",
+    "name": "JavaScript",
+    "level": "Avanzado",
+    "status": "aprendido",
     "logo": "js.png",
-    "descripcion": "Lenguaje base de la web, ejecutado en el navegador y backend."
+    "description": "Lenguaje base de la web, ejecutado en el navegador y backend."
   },
   {
-    "nombre": "TypeScript",
-    "nivel": "Intermedio",
-    "estado": "aprendido",
+    "name": "TypeScript",
+    "level": "Intermedio",
+    "status": "aprendido",
     "logo": "ts.png",
-    "descripcion": "Superset de JavaScript con tipado estático."
+    "description": "Superset de JavaScript con tipado estático."
   },
   {
-    "nombre": "Astro.js",
-    "nivel": "Intermedio",
-    "estado": "aprendido",
+    "name": "Astro.js",
+    "level": "Intermedio",
+    "status": "aprendido",
     "logo": "astro.png",
-    "descripcion": "Framework moderno para sitios rápidos y estáticos."
+    "description": "Framework moderno para sitios rápidos y estáticos."
   },
   {
-    "nombre": "React",
-    "nivel": "Intermedio",
-    "estado": "aprendido",
+    "name": "React",
+    "level": "Intermedio",
+    "status": "aprendido",
     "logo": "react.png",
-    "descripcion": "Librería para construir interfaces interactivas con componentes."
+    "description": "Librería para construir interfaces interactivas con componentes."
   },
   {
-    "nombre": "Ruby on Rails",
-    "nivel": "Intermedio",
-    "estado": "aprendido",
+    "name": "Ruby on Rails",
+    "level": "Intermedio",
+    "status": "aprendido",
     "logo": "rails.png",
-    "descripcion": "Framework MVC para construir aplicaciones web en Ruby."
+    "description": "Framework MVC para construir aplicaciones web en Ruby."
   },
   {
-    "nombre": "Python",
-    "nivel": "Intermedio",
-    "estado": "aprendido",
+    "name": "Python",
+    "level": "Intermedio",
+    "status": "aprendido",
     "logo": "python.png",
-    "descripcion": "Lenguaje de programación versátil y legible."
+    "description": "Lenguaje de programación versátil y legible."
   },
   {
-    "nombre": "Django",
-    "nivel": "Intermedio",
-    "estado": "aprendido",
+    "name": "Django",
+    "level": "Intermedio",
+    "status": "aprendido",
     "logo": "django.png",
-    "descripcion": "Framework robusto para construir aplicaciones web en Python."
+    "description": "Framework robusto para construir aplicaciones web en Python."
   },
   {
-    "nombre": "PostgreSQL",
-    "nivel": "Intermedio",
-    "estado": "aprendido",
+    "name": "PostgreSQL",
+    "level": "Intermedio",
+    "status": "aprendido",
     "logo": "postgres.png",
-    "descripcion": "Base de datos relacional avanzada y open-source."
+    "description": "Base de datos relacional avanzada y open-source."
   },
   {
-    "nombre": "MongoDB",
-    "nivel": "Básico",
-    "estado": "aprendido",
+    "name": "MongoDB",
+    "level": "Básico",
+    "status": "aprendido",
     "logo": "mongodb.png",
-    "descripcion": "Base de datos NoSQL orientada a documentos."
+    "description": "Base de datos NoSQL orientada a documentos."
   },
   {
-    "nombre": "Node.js",
-    "nivel": "Intermedio",
-    "estado": "aprendido",
+    "name": "Node.js",
+    "level": "Intermedio",
+    "status": "aprendido",
     "logo": "node.png",
-    "descripcion": "Entorno para ejecutar JavaScript en el servidor."
+    "description": "Entorno para ejecutar JavaScript en el servidor."
   },
   {
-    "nombre": "Express.js",
-    "nivel": "Intermedio",
-    "estado": "aprendido",
+    "name": "Express.js",
+    "level": "Intermedio",
+    "status": "aprendido",
     "logo": "express.png",
-    "descripcion": "Framework minimalista para APIs en Node.js."
+    "description": "Framework minimalista para APIs en Node.js."
   },
   {
-    "nombre": "Git",
-    "nivel": "Avanzado",
-    "estado": "aprendido",
+    "name": "Git",
+    "level": "Avanzado",
+    "status": "aprendido",
     "logo": "git.png",
-    "descripcion": "Sistema de control de versiones distribuido."
+    "description": "Sistema de control de versiones distribuido."
   }
 ]
