@@ -2,65 +2,161 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Toffy's Dev Quest</title>
-    <link rel="stylesheet" href="./assets/css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ✅ Title SEO (máx ~60 chars ideal) -->
+  <title>Abraham “Toffy” Caluga — Full-Stack Software Engineer | Portfolio</title>
+
+  <!-- ✅ Meta description (150–160 chars aprox) -->
+  <meta name="description"
+    content="Portfolio interactivo estilo GameBoy de Abraham 'Toffy' Caluga, Full-Stack Software Engineer (JavaScript, TypeScript, Ruby on Rails, Astro.js, PostgreSQL). Proyectos, skills y contacto." />
+
+  <!-- ✅ Canonical -->
+  <link rel="canonical" href="https://toffycaluga-portfolio.cirxoft.app/" />
+
+  <!-- ✅ Robots -->
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+
+  <!-- ✅ Theme color (móvil / PWA feel) -->
+  <meta name="theme-color" content="#00ff88" />
+
+  <!-- ✅ Favicons (ajusta rutas reales) -->
+  <link rel="icon" href="/assets/favicon/favicon.ico" sizes="any">
+  <link rel="icon" href="/assets/favicon/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/assets/favicon/apple-touch-icon.png">
+
+  <!-- ✅ Social: Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Toffy's Dev Quest" />
+  <meta property="og:title" content="Abraham “Toffy” Caluga — Full-Stack Software Engineer" />
+  <meta property="og:description"
+    content="Portfolio interactivo estilo GameBoy: proyectos, skills y contacto. JavaScript, TypeScript, Ruby on Rails, Astro.js, PostgreSQL." />
+  <meta property="og:url" content="https://toffycaluga-portfolio.cirxoft.app/" />
+  <meta property="og:image" content="https://toffycaluga-portfolio.cirxoft.app/assets/og/og-image.jpg" />
+  <meta property="og:image:alt" content="Toffy's Dev Quest — Portfolio interactivo estilo GameBoy" />
+
+  <!-- ✅ Social: Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Abraham “Toffy” Caluga — Full-Stack Software Engineer" />
+  <meta name="twitter:description"
+    content="Portfolio interactivo estilo GameBoy: proyectos, skills y contacto. JavaScript, TypeScript, Ruby on Rails, Astro.js, PostgreSQL." />
+  <meta name="twitter:image" content="https://toffycaluga-portfolio.cirxoft.app/assets/og/og-image.jpg" />
+
+  <!-- ✅ hreflang (si realmente tienes versión EN) -->
+  <link rel="alternate" href="https://toffycaluga-portfolio.cirxoft.app/?lang=es" hreflang="es" />
+  <link rel="alternate" href="https://toffycaluga-portfolio.cirxoft.app/?lang=en" hreflang="en" />
+  <link rel="alternate" href="https://toffycaluga-portfolio.cirxoft.app/" hreflang="x-default" />
+
+  <!-- ✅ Performance: preload CSS -->
+  <link rel="preload" href="./assets/css/style.css" as="style" />
+  <link rel="stylesheet" href="./assets/css/style.css" />
+
+  <!-- ✅ JSON-LD (SEO real) -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Abraham Lillo",
+      "alternateName": "Toffy Caluga",
+      "jobTitle": "Full-Stack Software Engineer",
+      "url": "https://toffycaluga-portfolio.cirxoft.app/",
+      "sameAs": [
+        "https://www.linkedin.com/in/abraham-lillo-lillo"
+      ],
+      "knowsAbout": [
+        "JavaScript",
+        "TypeScript",
+        "Ruby on Rails",
+        "Astro.js",
+        "PostgreSQL",
+        "HTML",
+        "CSS"
+      ],
+      "email": "mailto:abraham.lillol@gmail.com"
+    }
+  </script>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Toffy's Dev Quest",
+      "url": "https://toffycaluga-portfolio.cirxoft.app/",
+      "inLanguage": ["es", "en"]
+    }
+  </script>
 </head>
 
 <body>
-    <div class="console-shell">
-        <div class="container-flex">
-            <div class="canvas-wrapper">
-                <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <!-- ✅ H1 indexable (oculto visualmente, útil para Google) -->
+  <h1 class="sr-only">Abraham “Toffy” Caluga — Full-Stack Software Engineer Portfolio</h1>
 
-                <div id="project-links" class="project-links"></div>
-                <div id="contact-form" class="contact-form" style="display: none;">
-                    <input type="text" id="contact-name" placeholder="Nombre" />
-                    <input type="email" id="contact-email" placeholder="Email" />
-                    <textarea id="contact-message" placeholder="Mensaje"></textarea>
-                    <button id="contact-submit">Enviar</button>
-                </div>
-            </div>
+  <!-- ✅ Texto SEO indexable (no molesta al usuario) -->
+  <section class="sr-only" aria-label="Resumen del portfolio">
+    <p>
+      Portfolio interactivo estilo GameBoy de Abraham “Toffy” Caluga, Full-Stack Software Engineer.
+      Tecnologías: JavaScript, TypeScript, Ruby on Rails, Astro.js y PostgreSQL.
+      Incluye proyectos destacados, habilidades técnicas y formulario de contacto.
+    </p>
+  </section>
 
-            <div class="parlante">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-            </div>
-
-            <div class="start-select">
-                <button id="btn-start">START</button>
-                <button id="btn-select">SELECT</button>
-                <div class="audio-control">
-                    <!-- <span class="audio-label">Sonido</span> -->
-                    <label class="switch-audio">
-                        <input type="checkbox" id="audio-toggle" checked>
-                        <span class="slider"></span>
-                    </label>
-                </div>
-
-
-            </div>
-
-            <div class="gameboy-controls">
-                <div class="dpad">
-                    <button class="btn" id="btn-up">▲</button>
-                    <button class="btn" id="btn-left">◀</button>
-                    <button class="btn" id="btn-right">▶</button>
-                    <button class="btn" id="btn-down">▼</button>
-                </div>
-                <div class="ab-buttons">
-                    <button class="btn btn-a" id="btn-a">A</button>
-                    <button class="btn btn-b" id="btn-b">B</button>
-                </div>
-            </div>
-        </div>
+  <!-- ✅ Fallback si JS está desactivado -->
+  <noscript>
+    <div style="padding:16px; color:#fff; background:#000; font-family:monospace;">
+      Este portfolio es interactivo y requiere JavaScript para funcionar.
+      Puedes contactarme por LinkedIn: <a href="https://www.linkedin.com/in/abraham-lillo-lillo" style="color:#00ff88;">Abrir perfil</a>.
     </div>
+  </noscript>
 
-    <script type="module" src="init.js"></script>
+  <div class="console-shell" role="application" aria-label="Toffy's Dev Quest">
+    <div class="container-flex">
+      <div class="canvas-wrapper" aria-label="Pantalla principal del portfolio">
+        <canvas id="gameCanvas" width="800" height="600" aria-label="Canvas del portfolio interactivo"></canvas>
+
+        <div id="project-links" class="project-links" aria-label="Enlaces de proyectos"></div>
+
+        <div id="contact-form" class="contact-form" style="display:none;" aria-label="Formulario de contacto">
+          <input type="text" id="contact-name" placeholder="Nombre" autocomplete="name" />
+          <input type="email" id="contact-email" placeholder="Email" autocomplete="email" />
+          <textarea id="contact-message" placeholder="Mensaje"></textarea>
+          <button id="contact-submit" type="button">Enviar</button>
+        </div>
+      </div>
+
+      <div class="parlante" aria-hidden="true">
+        <div></div><div></div><div></div><div></div><div></div>
+      </div>
+
+      <div class="start-select" aria-label="Controles start y audio">
+        <button id="btn-start" type="button" aria-label="Start">START</button>
+        <button id="btn-select" type="button" aria-label="Select">SELECT</button>
+
+        <div class="audio-control" aria-label="Control de audio">
+          <label class="switch-audio">
+            <input type="checkbox" id="audio-toggle" checked aria-label="Activar o desactivar audio">
+            <span class="slider" aria-hidden="true"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="gameboy-controls" aria-label="Controles direccionales y botones A/B">
+        <div class="dpad" role="group" aria-label="Pad direccional">
+          <button class="btn" id="btn-up" type="button" aria-label="Arriba">▲</button>
+          <button class="btn" id="btn-left" type="button" aria-label="Izquierda">◀</button>
+          <button class="btn" id="btn-right" type="button" aria-label="Derecha">▶</button>
+          <button class="btn" id="btn-down" type="button" aria-label="Abajo">▼</button>
+        </div>
+
+        <div class="ab-buttons" role="group" aria-label="Botones A y B">
+          <button class="btn btn-a" id="btn-a" type="button" aria-label="Botón A">A</button>
+          <button class="btn btn-b" id="btn-b" type="button" aria-label="Botón B">B</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="init.js"></script>
 </body>
 
 </html>

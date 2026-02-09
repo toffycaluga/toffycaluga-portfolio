@@ -1,24 +1,64 @@
 import { lang } from "../i18n/lang.js";
 import { playSound, sounds } from "../utils/sound.js";
 
+import { clearScreen, drawPanel, drawTitle, drawFooterHints } from "../ui/draw.js";
+import { TYPO } from "../ui/typography.js";
+import { THEME } from "../ui/theme.js";
+import { LAYOUT } from "../ui/layout.js";
 
 const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
+if (!canvas) throw new Error("[menu] No se encontró #gameCanvas");
 
-// Este array debe coincidir con las claves usadas en game.js
-const menuOptions = ["menu_projects", "menu_skills", "menu_about", "menu_contact",
-    "menu_language"
+const ctx = canvas.getContext("2d");
+if (!ctx) throw new Error("[menu] No se pudo obtener contexto 2D");
+
+// Este array DEBE coincidir con game.js
+const menuOptions = [
+  "menu_projects",
+  "menu_skills",
+  "menu_about",
+  "menu_contact",
+  "menu_language",
 ];
 
-export function drawMenu(selectedOption) {
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#008855";
-    ctx.font = "35px monospace";
-    ctx.fillText(lang.menu_title, 200, 100);
+// ===============================
+// API PÚBLICA
+// ===============================
+export function drawMenu(selectedOption = 0) {
+  render(selectedOption);
+}
 
-    menuOptions.forEach((key, index) => {
-        ctx.fillStyle = index === selectedOption ? "#ffff00" : "#00ff88";
-        ctx.fillText(lang[key], 320, 160 + index * 40);
-    });
+// ===============================
+// RENDER
+// ===============================
+function render(selectedOption) {
+  clearScreen(ctx, canvas);
+  drawPanel(ctx, canvas);
+
+  drawTitle(ctx, lang.menu_title);
+
+  drawOptions(selectedOption);
+  drawFooterHints(ctx, canvas, "↑ ↓ Navegar", "Enter: Seleccionar");
+}
+
+// Opciones del menú
+function drawOptions(selectedOption) {
+  const startY = 140;
+  const gap = 42;
+
+  ctx.font = TYPO.font("section");
+
+  menuOptions.forEach((key, index) => {
+    const isSelected = index === selectedOption;
+
+    ctx.fillStyle = isSelected
+      ? THEME.colors.label
+      : THEME.colors.title;
+
+    ctx.fillText(
+      lang[key],
+      canvas.width / 2 - 80,
+      startY + index * gap
+    );
+  });
 }

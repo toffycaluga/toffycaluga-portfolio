@@ -1,7 +1,7 @@
 import { drawLanguageScreen, handleLanguageInput } from "./screens/language.js";
-import { handleKeyDown } from "./main.js";
+import { handleKeyDown } from "./game.js";
 import { drawIntroScreen } from "./screens/intro.js";
-import { playBackgroundMusic, stopBackgroundMusic, preloadSounds } from "./utils/sound.js";
+import { playBackgroundMusic, stopBackgroundMusic } from "./utils/sound.js";
 
 window.currentLang = "es";
 window.currentScreen = "intro";
@@ -17,50 +17,58 @@ window.addEventListener("DOMContentLoaded", () => {
 
     audioToggle.addEventListener("change", () => {
       isAudioOn = audioToggle.checked;
-      if (isAudioOn) {
-        playBackgroundMusic();
-      } else {
-        stopBackgroundMusic();
-      }
+      if (isAudioOn) playBackgroundMusic();
+      else stopBackgroundMusic();
     });
   }
 
-  // ⚡ Precargar sonidos antes de mostrar "Presiona Enter"
-  preloadSounds().then(() => {
-    drawIntroScreen(() => {
-      ready = true;
-    });
+  // ✅ NO precargues aquí si intro.js ya lo hace
+  drawIntroScreen(() => {
+    ready = true;
   });
 
-  const globalKeyHandler = (e) => {
+  const globalKeyHandler = async (e) => {
+    // INTRO
     if (window.currentScreen === "intro") {
       if (!ready) return;
 
       if (e.key === "Enter" || e.key.toLowerCase() === "a") {
         if (isAudioOn) playBackgroundMusic();
+
         window.currentScreen = "language-select";
         drawLanguageScreen();
       }
       return;
     }
 
+    // LANGUAGE
     if (window.currentScreen === "language-select") {
       handleLanguageInput(e);
-    } else {
-      handleKeyDown(e);
+      return;
     }
+
+    // RESTO (menu, skills, about, projects, contact...)
+    await handleKeyDown(e);
   };
 
   window.addEventListener("keydown", globalKeyHandler);
 
+  // Contact submit (mailto) — robusto
   const submitButton = document.getElementById("contact-submit");
   if (submitButton) {
     submitButton.addEventListener("click", () => {
-      const name = document.getElementById("contact-name").value;
-      const email = document.getElementById("contact-email").value;
-      const message = document.getElementById("contact-message").value;
+      const name = document.getElementById("contact-name")?.value ?? "";
+      const email = document.getElementById("contact-email")?.value ?? "";
+      const message = document.getElementById("contact-message")?.value ?? "";
 
-      window.location.href = `mailto:p.abraham.lillo@gmail.com?subject=Contacto desde el portafolio&body=Nombre: ${name}%0ACorreo: ${email}%0AMensaje:%0A${message}`;
+      const subject = "Contacto desde el portafolio";
+      const body = `Nombre: ${name}\nCorreo: ${email}\nMensaje:\n${message}`;
+
+      const mailto = `mailto:p.abraham.lillo@gmail.com?subject=${encodeURIComponent(
+        subject
+      )}&body=${encodeURIComponent(body)}`;
+
+      window.location.href = mailto;
     });
   }
 });

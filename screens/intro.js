@@ -1,44 +1,122 @@
 import { preloadSounds } from "../utils/sound.js";
+import { clearScreen, drawPanel, drawFooterHints } from "../ui/draw.js";
+import { TYPO } from "../ui/typography.js";
+import { THEME } from "../ui/theme.js";
+import { LAYOUT } from "../ui/layout.js";
 
+const canvas = document.getElementById("gameCanvas");
+if (!canvas) throw new Error("[intro] No se encontró #gameCanvas");
+
+const ctx = canvas.getContext("2d");
+if (!ctx) throw new Error("[intro] No se pudo obtener contexto 2D");
+
+// ===============================
+// ESTADO
+// ===============================
+let tick = 0;
+let showStartPrompt = false;
+let intervalId = null;
+
+// ===============================
+// API PÚBLICA
+// ===============================
 export function drawIntroScreen(onReadyToContinue) {
-  const canvas = document.getElementById("gameCanvas");
-  const ctx = canvas.getContext("2d");
+  if (typeof onReadyToContinue !== "function") {
+    throw new Error("[intro] onReadyToContinue debe ser una función");
+  }
 
-  let tick = 0;
-  let showStartPrompt = false;
+  tick = 0;
+  showStartPrompt = false;
 
-  // 🧠 Llamamos a preload y esperamos a que se complete
-  preloadSounds().then(() => {
-    showStartPrompt = true;
-    onReadyToContinue();
-  });
+  // Preload sonidos (una sola vez)
+  preloadSounds()
+    .then(() => {
+      showStartPrompt = true;
+      onReadyToContinue();
+    })
+    .catch((err) => {
+      console.error("[intro] Error precargando sonidos:", err);
+      showStartPrompt = true;
+      onReadyToContinue();
+    });
 
-  const interval = setInterval(() => {
+  startLoop();
+}
+
+// ===============================
+// LOOP
+// ===============================
+function startLoop() {
+  stopLoop();
+
+  intervalId = setInterval(() => {
     if (window.currentScreen !== "intro") {
-      clearInterval(interval);
+      stopLoop();
       return;
     }
 
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    ctx.fillStyle = "#ffff00";
-    ctx.font = "50px monospace";
-    ctx.fillText("Toffy Dev Quest", 200, 250);
-
-    ctx.fillStyle = "#00ff88";
-    ctx.font = "35px monospace";
-    ctx.fillText("presentado por Toffy Caluga", 150, 320);
-
-    ctx.font = "35px monospace";
-    if (!showStartPrompt) {
-      const dots = ".".repeat((tick % 3) + 1);
-      ctx.fillText(`Cargando${dots}`, 330, 380);
-    } else {
-      ctx.fillText("Presiona Enter o (A) para comenzar", 110, 380);
-    }
-
+    render();
     tick++;
   }, 500);
 }
 
+function stopLoop() {
+  if (intervalId) {
+    clearInterval(intervalId);
+    intervalId = null;
+  }
+}
+
+// ===============================
+// RENDER
+// ===============================
+function render() {
+  clearScreen(ctx, canvas);
+  drawPanel(ctx, canvas);
+
+  drawTitle();
+  drawSubtitle();
+  drawStatus();
+}
+
+function drawTitle() {
+  ctx.fillStyle = THEME.colors.title;
+  ctx.font = TYPO.font("title");
+
+  ctx.fillText(
+    "TOFFY DEV QUEST",
+    LAYOUT.contentPadding + 40,
+    canvas.height / 2 - 40
+  );
+}
+
+function drawSubtitle() {
+  ctx.fillStyle = THEME.colors.text;
+  ctx.font = TYPO.font("section");
+
+  ctx.fillText(
+    "presentado por Toffy Caluga",
+    LAYOUT.contentPadding + 40,
+    canvas.height / 2
+  );
+}
+
+function drawStatus() {
+  ctx.fillStyle = THEME.colors.hint;
+  ctx.font = TYPO.font("footer");
+
+  if (!showStartPrompt) {
+    const dots = ".".repeat((tick % 3) + 1);
+    ctx.fillText(
+      `Cargando${dots}`,
+      LAYOUT.contentPadding + 40,
+      canvas.height / 2 + 50
+    );
+  } else {
+    ctx.fillText(
+      "Presiona Enter o (A) para comenzar",
+      LAYOUT.contentPadding + 40,
+      canvas.height / 2 + 50
+    );
+  }
+}

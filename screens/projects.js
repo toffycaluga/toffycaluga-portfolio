@@ -1,26 +1,35 @@
 import { lang } from "../i18n/lang.js";
 
+import { clearScreen, drawPanel, drawTitle, drawFooterHints, wrapText } from "../ui/draw.js";
+import { LAYOUT } from "../ui/layout.js";
+import { THEME } from "../ui/theme.js";
+import { TYPO } from "../ui/typography.js";
+
 const canvas = document.getElementById("gameCanvas");
+if (!canvas) throw new Error("[projects] No se encontró #gameCanvas");
+
 const ctx = canvas.getContext("2d");
+if (!ctx) throw new Error("[projects] No se pudo obtener contexto 2D");
 
-export function drawProjectsScreen(projects) {
-  // Limpia canvas
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "#000";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+// Helpers
+function safeGetLinksContainer() {
+  const el = document.getElementById("project-links");
+  if (!el) console.error("[projects] No se encontró #project-links en el DOM");
+  return el;
+}
 
-  // Título
-  ctx.fillStyle = "#00ff88";
-  ctx.font = "35px monospace";
-  ctx.fillText(`=== ${lang.menu_projects.toUpperCase()} ===`, 230, 40);
+function clearProjectLinks() {
+  const linksContainer = safeGetLinksContainer();
+  if (!linksContainer) return;
+  linksContainer.replaceChildren();
+}
 
-  // Limpia links anteriores
-  const linksContainer = document.getElementById("project-links");
-  linksContainer.innerHTML = "";
-
-  // Escalado y offset relativo a .canvas-wrapper
+function getCanvasTransform() {
   const canvasRect = canvas.getBoundingClientRect();
-  const wrapperRect = canvas.parentElement.getBoundingClientRect();
+  const wrapper = canvas.parentElement;
+  if (!wrapper) throw new Error("[projects] canvas.parentElement no existe (necesito .canvas-wrapper)");
+
+  const wrapperRect = wrapper.getBoundingClientRect();
 
   const scaleX = canvasRect.width / canvas.width;
   const scaleY = canvasRect.height / canvas.height;
@@ -28,35 +37,97 @@ export function drawProjectsScreen(projects) {
   const offsetX = canvasRect.left - wrapperRect.left;
   const offsetY = canvasRect.top - wrapperRect.top;
 
+  return { scaleX, scaleY, offsetX, offsetY };
+}
+
+function createLink({ href, text, leftPx, topPx }) {
+  const a = document.createElement("a");
+  a.href = href;
+  a.target = "_blank";
+  a.rel = "noopener noreferrer";
+  a.textContent = text;
+
+  a.style.position = "absolute";
+  a.style.left = `${leftPx}px`;
+  a.style.top = `${topPx}px`;
+
+  // Estilo básico coherente (idealmente lo mueves a CSS)
+  a.style.color = THEME.colors.title;
+  a.style.fontFamily = TYPO.family;
+  a.style.fontSize = "14px";
+  a.style.textDecoration = "none";
+
+  a.addEventListener("mouseenter", () => (a.style.textDecoration = "underline"));
+  a.addEventListener("mouseleave", () => (a.style.textDecoration = "none"));
+
+  return a;
+}
+
+// ===============================
+// API PÚBLICA
+// ===============================
+export function drawProjectsScreen(projects) {
+  if (!Array.isArray(projects)) {
+    throw new Error("[projects] drawProjectsScreen esperaba un array de proyectos");
+  }
+
+  clearProjectLinks();
+
+  // Render base UI
+  clearScreen(ctx, canvas);
+  drawPanel(ctx, canvas);
+  drawTitle(ctx, lang.menu_projects);
+
+  // Dibujo listado + links sobre canvas
+  renderProjects(projects);
+
+  drawFooterHints(ctx, canvas, "Links encima del canvas", lang.back_hint);
+}
+
+// ===============================
+// RENDER
+// ===============================
+function renderProjects(projects) {
+  const linksContainer = safeGetLinksContainer();
+  if (!linksContainer) return;
+
+  const { scaleX, scaleY, offsetX, offsetY } = getCanvasTransform();
+
+  // Layout del listado
+  const startY = 110;
+  const rowGap = 95;
+
   projects.forEach((proyecto, index) => {
-    const baseY = 80 + index * 100;
+    const baseY = startY + index * rowGap;
 
-    // Título en canvas
-    ctx.fillStyle = "#ffff00";
-    ctx.font = "23px monospace";
-    ctx.fillText(`• ${proyecto.titulo}`, 30, baseY);
+    // Título
+    ctx.fillStyle = THEME.colors.label;
+    ctx.font = TYPO.font("section");
+    ctx.fillText(`• ${proyecto.titulo}`, LAYOUT.contentPadding, baseY);
 
-    // Descripción
-    ctx.fillStyle = "#00ff88";
-    ctx.fillText(proyecto.descripcion, 20, baseY + 30);
+    // Descripción (wrap)
+    ctx.fillStyle = THEME.colors.text;
+    ctx.font = TYPO.font("text");
+    wrapText(ctx, canvas, proyecto.descripcion, LAYOUT.contentPadding, baseY + 26);
 
-    // Enlace sobre el canvas
-    const visibleLink = proyecto.link.replace(/^https?:\/\//, "");
-    const link = document.createElement("a");
-    link.href = proyecto.link;
-    link.target = "_blank";
-    link.textContent = visibleLink;
+    // Link sobre canvas (posición calculada)
+    if (proyecto.link) {
+      const visibleLink = String(proyecto.link).replace(/^https?:\/\//, "");
 
-    // Posición absoluta dentro de .project-links
-    link.style.position = "absolute";
-    link.style.left = `${50 * scaleX + offsetX}px`;
-    link.style.top = `${(baseY + 28) * scaleY + offsetY}px`;
+      // Posición del link alineada con la descripción (aprox)
+      const linkX = (LAYOUT.contentPadding + 10) * scaleX + offsetX;
+      const linkY = (baseY + 48) * scaleY + offsetY;
 
-    linksContainer.appendChild(link);
+      const a = createLink({
+        href: proyecto.link,
+        text: visibleLink,
+        leftPx: linkX,
+        topPx: linkY,
+      });
+
+      linksContainer.appendChild(a);
+    } else {
+      console.warn("[projects] Proyecto sin link:", proyecto);
+    }
   });
-
-  // Hint de volver
-  ctx.fillStyle = "#888";
-  ctx.font = "16px monospace";
-  ctx.fillText(lang.back_hint, 220, canvas.height - 30);
 }

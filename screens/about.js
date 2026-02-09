@@ -1,87 +1,91 @@
 import { lang } from "../i18n/lang.js";
+import { LAYOUT } from "../ui/layout.js";
+import { clearScreen, drawPanel, drawTitle, drawFooterHints, drawLabelValue, wrapText } from "../ui/draw.js";
 
 const canvas = document.getElementById("gameCanvas");
+if (!canvas) throw new Error("[about] No se encontró #gameCanvas");
+
 const ctx = canvas.getContext("2d");
+if (!ctx) throw new Error("[about] No se pudo obtener contexto 2D");
+
+let currentPage = 0;
+let aboutData = null;
+
+const PAGES = ["profile", "experience", "status"];
 
 export function drawAboutScreen(data) {
-  ctx.fillStyle = "#000";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  let y = 60;
-  ctx.fillStyle = "#00ff88";
-  ctx.font = "25px monospace";
-  ctx.fillText(`=== ${lang.about_title.toUpperCase()} ===`, 200, y);
-  y += 40;
-
-  ctx.fillStyle = "#ffff00";
-  ctx.font = "25px monospace";
-  ctx.fillText(`${lang.about_name_label}:`, 20, y);
-  ctx.fillStyle = "#fff";
-  ctx.fillText(data.nombre_real, 120, y);
-  y += 25;
-
-  ctx.fillStyle = "#ffff00";
-  ctx.fillText(`${lang.about_stage_name_label}:`, 20, y);
-  ctx.fillStyle = "#fff";
-  ctx.fillText(data.nombre_artistico, 260, y);
-  y += 40;
-
-  ctx.fillStyle = "#00ff88";
-  ctx.fillText(`${lang.about_description_label}:`, 20, y);
-  y += 25;
-  wrapText(data.descripcion, 20, y);
-  y += 100;
-
-  ctx.fillStyle = "#00ff88";
-  ctx.fillText(`${lang.about_experience_label}:`, 10, y);
-  y += 25;
-  data.experiencia.forEach((exp) => {
-    ctx.fillStyle = "#ccc";
-    wrapText(exp, 20, y);
-    y += 60;
-  });
-
-  // y += 15;
-  ctx.fillStyle = "#00ff88";
-  ctx.fillText(`${lang.about_status_label}:`, 20, y);
-  y += 25;
-  data.estado_actual.forEach((line) => {
-    ctx.fillStyle = "#ccc";
-    wrapText(line, 20, y);
-    y += 30;
-  });
-
-  // y += 15;
-  // ctx.fillStyle = "#00ff88";
-  // ctx.fillText(`${lang.about_contact_label}:`, 20, y);
-  // y += 25;
-  // ctx.fillStyle = "#ccc";
-  // ctx.fillText(`📧 ${data.contacto.email}`, 120, y); y += 20;
-  // ctx.fillText(`🌐 ${data.contacto.portafolio}`, 120, y); y += 20;
-  // ctx.fillText(`💼 ${data.contacto.linkedin}`, 120, y);
-
-  ctx.fillStyle = "#555";
-  ctx.font = "25px monospace";
-  ctx.fillText(lang.back_hint, 200, canvas.height - 20);
+  if (!data) throw new Error("[about] No se recibió data");
+  aboutData = data;
+  currentPage = 0;
+  render();
 }
 
-function wrapText(text, x, y) {
-  const maxWidth = 800;
-  const lineHeight = 20;
-  const words = text.split(" ");
-  let line = "";
-
-  for (let i = 0; i < words.length; i++) {
-    const testLine = line + words[i] + " ";
-    const metrics = ctx.measureText(testLine);
-    if (metrics.width > maxWidth) {
-      ctx.fillStyle = "#ccc";
-      ctx.fillText(line, x, y);
-      line = words[i] + " ";
-      y += lineHeight;
-    } else {
-      line = testLine;
-    }
+export function handleAboutInput(e) {
+  if (e.key === "ArrowDown") {
+    currentPage = (currentPage + 1) % PAGES.length;
+    render();
+  } else if (e.key === "ArrowUp") {
+    currentPage = (currentPage - 1 + PAGES.length) % PAGES.length;
+    render();
   }
-  ctx.fillText(line, x, y);
+}
+
+function render() {
+  clearScreen(ctx, canvas);
+  drawPanel(ctx, canvas);
+  drawTitle(ctx, lang.about_title, `${currentPage + 1}/${PAGES.length}`);
+
+  switch (PAGES[currentPage]) {
+    case "profile":
+      drawProfile();
+      break;
+    case "experience":
+      drawExperience();
+      break;
+    case "status":
+      drawStatus();
+      break;
+  }
+
+  drawFooterHints(ctx, canvas, "↑ ↓ Cambiar sección", lang.back_hint);
+}
+
+function drawProfile() {
+  let y = 80;
+
+  drawLabelValue(ctx, lang.about_name_label, aboutData.nombre_real, LAYOUT.contentPadding, y);
+  y += 30;
+
+  drawLabelValue(ctx, lang.about_stage_name_label, aboutData.nombre_artistico, LAYOUT.contentPadding, y);
+  y += 40;
+
+  // Título sección
+  ctx.fillText(lang.about_description_label, LAYOUT.contentPadding, y);
+  y += 25;
+
+  wrapText(ctx, canvas, aboutData.descripcion, LAYOUT.contentPadding, y);
+}
+
+function drawExperience() {
+  let y = 90;
+
+  ctx.fillText(lang.about_experience_label, LAYOUT.contentPadding, y);
+  y += 30;
+
+  aboutData.experiencia.forEach((item) => {
+    wrapText(ctx, canvas, `• ${item}`, LAYOUT.contentPadding, y);
+    y += 45;
+  });
+}
+
+function drawStatus() {
+  let y = 90;
+
+  ctx.fillText(lang.about_status_label, LAYOUT.contentPadding, y);
+  y += 30;
+
+  aboutData.estado_actual.forEach((item) => {
+    wrapText(ctx, canvas, `• ${item}`, LAYOUT.contentPadding, y);
+    y += 35;
+  });
 }

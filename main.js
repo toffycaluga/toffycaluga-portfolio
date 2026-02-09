@@ -10,10 +10,53 @@ const menuOptions = [
   "menu_skills",
   "menu_about",
   "menu_contact",
-  "menu_language"
+  "menu_language",
 ];
 
-export function handleKeyDown(e) {
+// ✅ Estricto: sin fallback de idioma
+function requireLangCode() {
+  const code = window.currentLang;
+  if (!code) throw new Error("[game] window.currentLang no está seteado (llama setLanguage antes)");
+  return code;
+}
+
+// ✅ Fetch estricto + logs reales
+async function fetchJson(url, label = "data") {
+  console.log(`[game] Fetch ${label} ->`, url);
+
+  const res = await fetch(url);
+  if (!res.ok) {
+    const msg = `[game] HTTP ${res.status} cargando ${url}`;
+    console.error(msg);
+    throw new Error(msg);
+  }
+
+  const json = await res.json();
+  console.log(`[game] OK ${label} ->`, url, json);
+  return json;
+}
+
+// ✅ Limpieza cuando vuelves al menú
+function cleanupOnBackToMenu() {
+  // Formulario contacto
+  const form = document.getElementById("contact-form");
+  if (form) {
+    form.reset?.();
+    form.style.display = "none";
+    ["contact-name", "contact-email", "contact-message"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.value = "";
+    });
+  }
+
+  // Links de proyectos
+  const links = document.getElementById("project-links");
+  if (links) links.replaceChildren();
+}
+
+export async function handleKeyDown(e) {
+  if (!e?.key) return;
+
   // 🎮 Desde pantalla de inicio
   if (window.currentScreen === "start" && e.key === "Enter") {
     window.currentScreen = "menu";
@@ -30,84 +73,87 @@ export function handleKeyDown(e) {
   // 📋 Navegación en el menú principal
   if (window.currentScreen === "menu") {
     if (e.key === "ArrowUp") {
-      playSound(sounds.click);
+      playSound?.(sounds?.click);
       selectedOption = (selectedOption - 1 + menuOptions.length) % menuOptions.length;
       drawMenu(selectedOption);
-    } else if (e.key === "ArrowDown") {
-      playSound(sounds.click);
+      return;
+    }
+
+    if (e.key === "ArrowDown") {
+      playSound?.(sounds?.click);
       selectedOption = (selectedOption + 1) % menuOptions.length;
       drawMenu(selectedOption);
-    } else if (e.key === "Enter") {
-      playSound(sounds.enter);
+      return;
+    }
+
+    if (e.key === "Enter") {
+      playSound?.(sounds?.enter);
+
       const selected = menuOptions[selectedOption];
-      const langCode = window.currentLang || "es";
 
-      switch (selected) {
-        case "menu_projects":
-          fetch(`data/projects.${langCode}.json`)
-            .then(res => res.json())
-            .then(projects => {
-              window.currentScreen = "projects";
-              import("./screens/projects.js").then(mod => mod.drawProjectsScreen(projects));
-            });
-          break;
+      try {
+        const langCode = requireLangCode();
 
-        case "menu_skills":
-          fetch("data/skills.json")
-            .then(res => res.json())
-            .then(skills => {
-              window.currentScreen = "skills";
-              drawSkillsScreen(skills);
-            });
-          break;
+        switch (selected) {
+          case "menu_projects": {
+            const url = `data/projects.${langCode}.json`;
+            const projects = await fetchJson(url, "projects");
+            window.currentScreen = "projects";
+            drawProjectsScreen(projects);
+            break;
+          }
 
-        case "menu_about":
-          fetch(`data/about.${langCode}.json`)
-            .then(res => res.json())
-            .then(data => {
-              window.currentScreen = "about";
-              import("./screens/about.js").then(mod => mod.drawAboutScreen(data));
-            });
-          break;
+          case "menu_skills": {
+            const url = `data/skills.${langCode}.json`; // ✅ YA NO skills.json
+            const skills = await fetchJson(url, "skills");
+            window.currentScreen = "skills";
+            drawSkillsScreen(skills);
+            break;
+          }
 
-        case "menu_contact":
-          window.currentScreen = "contact";
-          import("./screens/contact.js").then(mod => {
+          case "menu_about": {
+            const url = `data/about.${langCode}.json`;
+            const data = await fetchJson(url, "about");
+            window.currentScreen = "about";
+            const mod = await import("./screens/about.js");
+            mod.drawAboutScreen(data);
+            break;
+          }
+
+          case "menu_contact": {
+            window.currentScreen = "contact";
+            const mod = await import("./screens/contact.js");
             mod.drawContactScreen();
-            mod.setupContactForm?.(); // Safe call
-          });
-          break;
+            mod.setupContactForm?.();
+            break;
+          }
 
-        case "menu_language":
-          window.currentScreen = "language-select";
-          import("./screens/language.js").then(mod => mod.drawLanguageScreen());
-          break;
+          case "menu_language": {
+            window.currentScreen = "language-select";
+            const mod = await import("./screens/language.js");
+            mod.drawLanguageScreen();
+            break;
+          }
+
+          default:
+            alert(`Elegiste: ${selected}`);
+            break;
+        }
+      } catch (err) {
+        console.error("[game] Error al ejecutar opción del menú:", err);
       }
+
+      return;
     }
   }
 
   // 🔙 Volver al menú desde otras pantallas
-  if (
-    ["projects", "skills", "about", "contact"].includes(window.currentScreen) &&
-    e.key === "Escape"
-  ) {
-    playSound(sounds.back);
+  if (["projects", "skills", "about", "contact"].includes(window.currentScreen) && e.key === "Escape") {
+    playSound?.(sounds?.back);
     window.currentScreen = "menu";
+    cleanupOnBackToMenu();
     drawMenu(selectedOption);
-
-    // 🧼 Limpiar y ocultar el formulario de contacto
-    const form = document.getElementById("contact-form");
-    if (form) {
-      form.reset?.();
-      form.style.display = "none";
-      ["contact-name", "contact-email", "contact-message"].forEach(id => {
-        const input = document.getElementById(id);
-        if (input) input.value = "";
-      });
-    }
-
-    // 🧼 Limpiar enlaces de proyectos si los hay
-    document.getElementById("project-links")?.replaceChildren();
+    return;
   }
 }
 
