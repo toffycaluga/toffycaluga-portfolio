@@ -146,9 +146,7 @@ export async function handleKeyDown(e) {
 
   // BACK global primero (para que About/Skills NO se lo coman)
   const isBackKey =
-    e.key === "Escape" ||
-    e.key === "b" ||
-    e.key === "B";
+    e.key === "Escape" ;
 
   if (
     ["projects", "skills", "about", "contact", "language-select"].includes(screen) &&
