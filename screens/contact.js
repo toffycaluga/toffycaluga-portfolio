@@ -4,7 +4,7 @@ import {
   drawPanel,
   drawTitle,
   drawFooterHints,
-  wrapText, // ✅ IMPORTANTE
+  wrapText,
 } from "../ui/draw.js";
 import { LAYOUT } from "../ui/layout.js";
 import { THEME } from "../ui/theme.js";
@@ -16,7 +16,6 @@ if (!canvas) throw new Error("[contact] No se encontró #gameCanvas");
 const ctx = canvas.getContext("2d");
 if (!ctx) throw new Error("[contact] No se pudo obtener contexto 2D");
 
-// Guarda dónde termina el texto para ubicar el formulario debajo
 let instructionsBottomY = 0;
 
 // ===============================
@@ -25,6 +24,7 @@ let instructionsBottomY = 0;
 export function drawContactScreen() {
   render();
   showContactForm();
+  bindContactSubmit();
 }
 
 // ===============================
@@ -36,42 +36,27 @@ function render() {
   drawTitle(ctx, lang.menu_contact);
 
   instructionsBottomY = drawInstructions();
-
   drawFooterHints(ctx, canvas, lang.contact_footer_hint, lang.back_hint);
 }
 
 function drawInstructions() {
-  // Posición inicial del texto (ajústala si quieres)
   let y = 95;
 
   ctx.fillStyle = THEME.colors.text;
   ctx.font = TYPO.font("text");
 
   const maxWidth = canvas.width - LAYOUT.contentPadding * 2;
+  const lineHeight = 24;
 
-  // 1) línea / párrafo 1 (con wrap)
-  wrapText(ctx, String(lang.contact_instructions_1 ?? ""), LAYOUT.contentPadding, y, {
-    maxWidth,
-    lineHeight: 24, // ✅ más compacto
-    maxLines: 4,    // evita que se coma la pantalla si el texto es enorme
-  });
+  const t1 = String(lang.contact_instructions_1 ?? "");
+  wrapText(ctx, t1, LAYOUT.contentPadding, y, { maxWidth, lineHeight, maxLines: 6 });
+  y += estimateLines(t1, maxWidth) * lineHeight + 10;
 
-  // Estimación simple de cuánto avanzó (si tu wrapText no retorna líneas)
-  // Si tu wrapText sí retorna "linesUsed", me lo dices y lo hacemos perfecto.
-  const p1Lines = estimateLines(String(lang.contact_instructions_1 ?? ""), maxWidth);
-  y += p1Lines * 24 + 10;
+  const t2 = String(lang.contact_instructions_2 ?? "");
+  wrapText(ctx, t2, LAYOUT.contentPadding, y, { maxWidth, lineHeight, maxLines: 6 });
+  y += estimateLines(t2, maxWidth) * lineHeight;
 
-  // 2) línea / párrafo 2 (con wrap)
-  wrapText(ctx, String(lang.contact_instructions_2 ?? ""), LAYOUT.contentPadding, y, {
-    maxWidth,
-    lineHeight: 24,
-    maxLines: 4,
-  });
-
-  const p2Lines = estimateLines(String(lang.contact_instructions_2 ?? ""), maxWidth);
-  y += p2Lines * 24;
-
-  return y; // ✅ esto es donde termina el texto
+  return y;
 }
 
 // ===============================
@@ -91,15 +76,17 @@ function showContactForm() {
   form.style.maxWidth = "360px";
   form.style.width = "80%";
 
-  // ✅ Colocarlo debajo del texto (en vez de fijo "20px")
-  const top = Math.min(instructionsBottomY + 14, canvas.height - 380);
-  form.style.marginTop = `${top - 165}px`; // 95 = y inicial aproximado del bloque
+  // Colocar debajo del texto (sin chocar con footer)
+  const formTop = Math.min(instructionsBottomY + 18, canvas.height - 380);
+
+  // Como el form está overlay sobre el canvas, marginTop funciona relativo a su flujo.
+  // Ajuste: el texto empieza cerca de 95, por eso restamos ese "origen".
+  form.style.marginTop = `${Math.max(16, formTop - 160)}px`;
 
   form.style.marginLeft = "auto";
   form.style.marginRight = "auto";
 }
 
-// Opcional: para ocultarlo desde fuera
 export function hideContactForm() {
   const form = document.getElementById("contact-form");
   if (!form) return;
@@ -110,7 +97,86 @@ export function hideContactForm() {
 }
 
 // ===============================
-// Helper: estimar líneas según ancho (para avanzar Y)
+// ENVÍO REAL (Vercel API)
+// ===============================
+function bindContactSubmit() {
+  const form = document.getElementById("contact-form");
+  if (!form) return;
+
+  if (form.dataset.bound === "1") return;
+  form.dataset.bound = "1";
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const btn = document.getElementById("contact-submit");
+    const originalText = btn?.textContent ?? "Enviar";
+
+    const name = form.querySelector('[name="name"]')?.value?.trim() ?? "";
+    const email = form.querySelector('[name="email"]')?.value?.trim() ?? "";
+    const message = form.querySelector('[name="message"]')?.value?.trim() ?? "";
+    const website = form.querySelector('[name="website"]')?.value ?? ""; // honeypot
+
+    if (!name || !email || !message) {
+      showContactToast(false, lang?.contact_error_fields ?? "❌ Completa todos los campos.");
+      return;
+    }
+
+    try {
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = lang?.sending ?? "Enviando...";
+      }
+
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, message, website }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !data?.ok) {
+        throw new Error(data?.error || "Request failed");
+      }
+
+      form.reset();
+      showContactToast(true, lang?.contact_success ?? "✅ Mensaje enviado. Te respondo lo antes posible.");
+    } catch (err) {
+      console.error("[contact] submit error:", err);
+      showContactToast(false, lang?.contact_error ?? "❌ Error al enviar. Intenta de nuevo.");
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = lang?.send ?? originalText;
+      }
+    }
+  });
+}
+
+function showContactToast(ok, text) {
+  const toast = document.getElementById("contact-toast");
+  if (!toast) {
+    alert(text);
+    return;
+  }
+
+  toast.textContent = text;
+  toast.dataset.kind = ok ? "ok" : "err";
+  toast.style.display = "block";
+  toast.style.opacity = "1";
+
+  clearTimeout(showContactToast._t1);
+  clearTimeout(showContactToast._t2);
+
+  showContactToast._t1 = setTimeout(() => {
+    toast.style.opacity = "0";
+    showContactToast._t2 = setTimeout(() => (toast.style.display = "none"), 250);
+  }, 2600);
+}
+
+// ===============================
+// Helper: estimar líneas para el Y
 // ===============================
 function estimateLines(text, maxWidth) {
   const words = String(text ?? "").split(/\s+/).filter(Boolean);

@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.21.4",
+    "resend": "^6.9.1",
     "socket.io-client": "^4.8.1"
   },
   "devDependencies": {

@@ -119,13 +119,28 @@
 
         <div id="project-links" class="project-links" aria-label="Enlaces de proyectos"></div>
 
-        <div id="contact-form" class="contact-form" style="display:none;" aria-label="Formulario de contacto">
-          <input type="text" id="contact-name" placeholder="Nombre" autocomplete="name" />
-          <input type="email" id="contact-email" placeholder="Email" autocomplete="email" />
-          <textarea id="contact-message" placeholder="Mensaje"></textarea>
-          <button id="contact-submit" type="button">Enviar</button>
-        </div>
+        <form id="contact-form" class="contact-form" style="display:none;" aria-label="Formulario de contacto">
+  <!-- honeypot anti-spam -->
+  <input
+    type="text"
+    name="website"
+    autocomplete="off"
+    tabindex="-1"
+    aria-hidden="true"
+    style="position:absolute; left:-9999px; opacity:0;"
+  />
+
+  <input type="text" name="name" id="contact-name" placeholder="Nombre" autocomplete="name" required />
+  <input type="email" name="email" id="contact-email" placeholder="Email" autocomplete="email" required />
+  <textarea name="message" id="contact-message" placeholder="Mensaje" required></textarea>
+
+  <button id="contact-submit" type="submit">Enviar</button>
+</form>
+
+<div id="contact-toast" class="contact-toast" style="display:none" aria-live="polite"></div>
+
       </div>
+
 
       <div class="parlante" aria-hidden="true">
         <div></div><div></div><div></div><div></div><div></div>
