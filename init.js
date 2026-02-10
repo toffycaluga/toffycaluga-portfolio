@@ -68,23 +68,23 @@ window.addEventListener("DOMContentLoaded", () => {
   // =========================
   // Contact submit (mailto)
   // =========================
-  const submitButton = document.getElementById("contact-submit");
-  if (submitButton) {
-    submitButton.addEventListener("click", () => {
-      const name = document.getElementById("contact-name")?.value ?? "";
-      const email = document.getElementById("contact-email")?.value ?? "";
-      const message = document.getElementById("contact-message")?.value ?? "";
+  // const submitButton = document.getElementById("contact-submit");
+  // if (submitButton) {
+  //   submitButton.addEventListener("click", () => {
+  //     const name = document.getElementById("contact-name")?.value ?? "";
+  //     const email = document.getElementById("contact-email")?.value ?? "";
+  //     const message = document.getElementById("contact-message")?.value ?? "";
 
-      const subject = "Contacto desde el portafolio";
-      const body = `Nombre: ${name}\nCorreo: ${email}\nMensaje:\n${message}`;
+  //     const subject = "Contacto desde el portafolio";
+  //     const body = `Nombre: ${name}\nCorreo: ${email}\nMensaje:\n${message}`;
 
-      const mailto = `mailto:p.abraham.lillo@gmail.com?subject=${encodeURIComponent(
-        subject
-      )}&body=${encodeURIComponent(body)}`;
+  //     const mailto = `mailto:p.abraham.lillo@gmail.com?subject=${encodeURIComponent(
+  //       subject
+  //     )}&body=${encodeURIComponent(body)}`;
 
-      window.location.href = mailto;
-    });
-  }
+  //     window.location.href = mailto;
+  //   });
+  // }
 });
 
 // ======================================================
